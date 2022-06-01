@@ -1,0 +1,52 @@
+.vehicleInfoPaper {
+  border-top: 5px solid darkorange;
+}
+
+.vehicleImagePaper {
+  border-top: 5px solid darkcyan;
+}
+
+.vehicleInsurencePaper {
+  border-top: 5px solid tan;
+}
+
+.vehicleMechanicalPaper {
+  border-top: 5px solid blueviolet;
+}
+
+.otherNotesPaper {
+  border-top: 5px solid lightpink;
+}
+
+.vehicleType {
+  border-top: 5px solid hotpink;
+}
+
+.driverDetailsInfoPaper {
+  border-top: 5px solid lightcoral;
+  height: auto;
+  min-height: 100%;
+}
+
+.uploadDriverImagePaper {
+  border-top: 5px solid lightcoral;
+  height: 351px;
+  min-height: 351px;
+}
+
+.assignDriverPaper {
+  border-top: 5px solid maroon;
+}
+
+.avatarDiv {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.removeBtn {
+  position: absoulte;
+  top: 10px;
+  left: 10px
+}

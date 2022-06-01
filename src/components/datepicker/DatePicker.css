@@ -1,0 +1,10 @@
+.dateRangePicker {
+  padding-right: 0.5rem;
+}
+.DateInput {
+  position: static !important;
+}
+
+.DateRangePickerInput__withBorder {
+  border: none;
+}

@@ -1,0 +1,231 @@
+.donut-chart-status {
+  width: 21rem;
+  font-size: 27px;
+  height: 12rem;
+}
+
+.donut-chart-oddometer {
+  width: 23rem;
+  height: 10rem;
+  font-size: xx-large;
+}
+
+.donut-chart-fuel {
+  width: 20rem;
+  height: 10rem;
+  font-size: xx-large;
+}
+
+.select-vehicle-text-display-div {
+  height: 42.85rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.col-15 {
+  width: 15%;
+  margin-right: 0.5rem;
+}
+
+.trips-header-div,
+.driver-behaviour-header-div,
+.fuel-header-div,
+.efficiency-header-div,
+.events-header-div,
+.engine-immobilizer-container,
+.tilt-and-elevation-container,
+.sudden-acceleration-and-harsh-braking-container {
+  display: flex;
+  color: green;
+  margin: 0.5rem;
+  border-bottom: 1px solid lightgray;
+}
+
+.trips-header-text,
+.driver-behaviour-header-text,
+.fuel-header-text,
+.efficiency-header-text,
+.events-header-text {
+  padding: 0.25rem;
+}
+
+.summary-text,
+.events-count-text {
+  margin: 0.5rem;
+}
+
+.vehicles-trips-details,
+.vehicles-driver-behaviour-details {
+  display: flex;
+  margin: 0.25rem;
+}
+
+.trips-details,
+.driver-behaviour-details {
+  height: 7.25rem;
+  width: 10.25rem;
+  background-color: rgb(236, 236, 236);
+  margin-left: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.trips-details-list-text,
+.driver-behaviour-details-list-text,
+.fuel-details-list-text,
+.efficiency-details-list-text,
+.sudden-acceleration-and-harsh-braking-details-list-text {
+  color: green;
+}
+
+.chart-and-graph-div {
+  display: flex;
+  margin: 0.5rem;
+}
+
+.donut-div {
+  height: 15rem;
+  background-color: white;
+  width: 25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: xx-large;
+}
+
+.graph-div {
+  margin-left: 0.5rem;
+  height: 15rem;
+  width: 35.75rem;
+}
+
+.vehicle-status-donut-chart {
+  height: 10rem;
+}
+
+.trips-details-data-table,
+.driver-behaviour-details-data-table,
+.fuel-details-data-table,
+.efficiency-details-data-table {
+  margin: 0.5rem;
+  margin-top: 2.5rem;
+}
+
+.fuel-donut-chart-div,
+.efficiency-donut-chart-div {
+  margin: 0.5rem;
+  display: flex;
+}
+
+.fuel-chart-div,
+.efficiency-chart-div {
+  background-color: white;
+  min-width: 25rem;
+  height: 20rem;
+  font-size: xx-large;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.fuel-details-divs,
+.efficiency-details-divs {
+  width: 100%;
+  margin-left: 0.5rem;
+  background-color: white;
+}
+
+
+.sudden-acceleration-and-harsh-braking-details-divs {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  background-color: white;
+}
+
+.fuel-details-divs-row-one,
+.fuel-details-divs-row-two,
+.efficiency-details-divs-row-one,
+.efficiency-details-divs-row-two,
+.sudden-acceleration-and-harsh-braking-details-divs-row-one {
+  display: flex;
+}
+
+.fuel-details-div,
+.efficiency-details-div {
+  width: 25%;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  background-color: rgb(236, 236, 236);
+  margin-right: 0.15rem;
+  padding-right: 0.25rem;
+  margin-bottom: 0.15rem;
+  padding-bottom: 0.25rem;
+}
+
+
+.sudden-acceleration-and-harsh-braking-details-div {
+  flex:1;
+  height: 10rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  background-color: rgb(236, 236, 236);
+  margin-right: 0.15rem;
+  padding-right: 0.25rem;
+  margin-bottom: 0.15rem;
+  padding-bottom: 0.25rem;
+}
+
+.events-chart-and-progress-div {
+  margin-left: 0.5rem;
+  display: flex;
+}
+
+.events-count-text {
+  display: flex;
+}
+
+.events-chart-title-div {
+  width: 61%;
+}
+
+.progress-bars-div {
+  width: 35%;
+  display: flex;
+  margin: 0px 1%;
+  justify-content: space-between;
+}
+
+.events-details-progress-bars-div {
+  width: 500px;
+  height: 300px;
+  background-color: white;
+  margin: 0px 2%;
+  overflow: auto;
+}
+
+.progress-bars-title-and-value-div {
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 5%;
+}
+
+.events-details-data-table-div {
+  margin-top: 1rem;
+  margin-left: 1rem;
+}
+
+.events-details-data-table {
+  margin-top: 1rem;
+  margin-left: 0.1rem;
+}
