@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { withGoogleMap, GoogleMap, Polyline, Marker } from "react-google-maps";
 
 const Map = (props) => {
-  const [waypoints, setWayPoints] = useState(props.waypoints.map(wp => {
-    return {
-      lat: wp.latitude,
-      lng: wp.longitude
-    }
-  }));
+  const [waypoints, setWayPoints] = useState(
+    props.waypoints.map((wp) => {
+      return {
+        lat: wp.latitude,
+        lng: wp.longitude,
+      };
+    })
+  );
 
   return waypoints.length >= 2 ? (
     <GoogleMap
@@ -16,14 +18,10 @@ const Map = (props) => {
     >
       {waypoints && (
         <>
-          <Polyline
-            path={waypoints}
-            options={{ strokeColor: "#FF0000 " }}
-          />
+          <Polyline path={waypoints} options={{ strokeColor: "#FF0000 " }} />
           <Marker
             icon={{
-              url:
-                "https://images.vexels.com/media/users/3/154573/isolated/preview/bd08e000a449288c914d851cb9dae110-hatchback-car-top-view-silhouette-by-vexels.png",
+              url: "https://images.vexels.com/media/users/3/154573/isolated/preview/bd08e000a449288c914d851cb9dae110-hatchback-car-top-view-silhouette-by-vexels.png",
               scaledSize: new window.google.maps.Size(20, 20),
               anchor: { x: 10, y: 10 },
             }}
@@ -32,11 +30,10 @@ const Map = (props) => {
         </>
       )}
     </GoogleMap>
-  ) : (<GoogleMap
-    zoom={14}
-    center={{ lat: undefined, lng: undefined }}></GoogleMap>);
-
-}
+  ) : (
+    <GoogleMap zoom={14} center={{ lat: 14.5, lng: 77.6 }}></GoogleMap>
+  );
+};
 
 const MapComponent = withGoogleMap(Map);
 

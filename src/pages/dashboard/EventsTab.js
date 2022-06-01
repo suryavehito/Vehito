@@ -18,75 +18,107 @@ function EventsTab(props) {
     BKW: 0,
     HRT: 0,
     HLT: 0,
-    WKS: 0
-  })
-  const events = [{
-    label: 'Over Speeding',
-    code: 'OSP',
-    color: '#800000'
-  },
-  {
-    label: 'Sudden Acceleration',
-    code: "SAC",
-    color: '#FF0000'
-  },
-  {
-    label: 'Harsh Breaking',
-    code: "HBR",
-    color: '#800080'
-  },
-  {
-    label: 'Excessive Idling',
-    code: "EID",
-    color: '#FF00FF'
-  },
-  {
-    label: 'Over Load',
-    code: "OLD",
-    color: '#008000'
-  },
-  {
-    label: 'Panic On',
-    code: "PNC",
-    color: '#00FF00'
-  },
-  {
-    label: 'Main Battery Low',
-    code: "BLW",
-    color: '#808000'
-  },
-  {
-    label: 'Backup Battery Low',
-    code: "BKW",
-    color: '#FFFF00'
-  },
-  {
-    label: 'Harsh Right Tilt',
-    code: "HRT",
-    color: '#000080'
-  },
-  {
-    label: 'Harsh Left Tilt',
-    code: "HLT",
-    color: '#0000FF'
-  },
-  {
-    label: 'Week Signal',
-    code: "WKS",
-    color: '#008080'
-  }];
+    WKS: 0,
+  });
+  const [eventDetails, setEventDetails] = useState([]);
+  const events = [
+    {
+      label: "Over Speeding",
+      code: "OSP",
+      color: "#800000",
+    },
+    {
+      label: "Sudden Acceleration",
+      code: "SAC",
+      color: "#FF0000",
+    },
+    {
+      label: "Harsh Breaking",
+      code: "HBR",
+      color: "#800080",
+    },
+    {
+      label: "Excessive Idling",
+      code: "EID",
+      color: "#FF00FF",
+    },
+    {
+      label: "Over Load",
+      code: "OLD",
+      color: "#008000",
+    },
+    {
+      label: "Panic On",
+      code: "PNC",
+      color: "#00FF00",
+    },
+    {
+      label: "Main Battery Low",
+      code: "BLW",
+      color: "#808000",
+    },
+    {
+      label: "Backup Battery Low",
+      code: "BKW",
+      color: "#FFFF00",
+    },
+    {
+      label: "Harsh Right Tilt",
+      code: "HRT",
+      color: "#000080",
+    },
+    {
+      label: "Harsh Left Tilt",
+      code: "HLT",
+      color: "#0000FF",
+    },
+    {
+      label: "Week Signal",
+      code: "WKS",
+      color: "#008080",
+    },
+  ];
+
+  const [count, setCount] = useState(1);
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    getEvents('02205eb6-0ff2-400d-bfbd-b53122b06108').then(response => {
+    getEvents("02205eb6-0ff2-400d-bfbd-b53122b06108").then((response) => {
       const tmpData = { ...data };
-      response.map(res => {
-        res.eventDetailList.map(eve => {
-          tmpData[eve.eventCode] = tmpData[eve.eventCode] ? tmpData[eve.eventCode] + 1 : 1;
-        })
-      })
+      setEventDetails(response);
+      response.map((res, i) => {
+        res.eventDetailList.map((eve, index) => {
+          tmpData[eve.eventCode] = tmpData[eve.eventCode]
+            ? tmpData[eve.eventCode] + 1
+            : 1;
+        });
+      });
       setData(tmpData);
     });
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (eventDetails.length > 0 && rows?.length === 0) {
+      setEvents();
+    }
+  }, [eventDetails]);
+
+  const setEvents = () => {
+    eventDetails?.map((event, index) => {
+      event?.eventDetailList.map((item, i) =>
+        setRows((state) => [
+          ...state,
+          {
+            id: `${event?.dateTime}_${index}_${i}`,
+            eventName: item?.eventName,
+            eventCode: item?.eventCode,
+            value: item?.value,
+          },
+        ])
+      );
+    });
+  };
+
   return (
     <Fragment>
       <div className="events-container">
@@ -142,26 +174,31 @@ function EventsTab(props) {
           <div className="events-details-progress-bars-div">
             {events.map((event) => {
               return (
-                <>
+                <div key={event?.code}>
                   <div className="progress-bars-title-and-value-div">
                     <div>
                       <p>{event.label}</p>
                     </div>
                     <div>
-                      <p>
-                        {data[event.code]}
-                      </p>
+                      <p>{data[event.code]}</p>
                     </div>
                   </div>
                   <div className="progress speeding-progress">
                     <EventsProgress
                       color={event.color}
-                      value={data[event.code]
+                      value={
+                        (Math.round(
+                          rows?.filter(
+                            (item) => item?.eventCode === event?.code
+                          )?.length
+                        ) /
+                          rows?.length) *
+                        100
                       }
                     />
                   </div>
-                </>
-              )
+                </div>
+              );
             })}
           </div>
         </div>
@@ -172,7 +209,12 @@ function EventsTab(props) {
             </Typography>
           </div>
           <div className="events-details-data-table">
-            <EventsDataTable vehicles={props.vehicles} />
+            {eventDetails !== null && (
+              <EventsDataTable
+                vehicles={props.vehicles}
+                eventDetails={eventDetails}
+              />
+            )}
           </div>
         </div>
       </div>

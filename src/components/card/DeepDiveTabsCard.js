@@ -9,6 +9,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
+import { useParams } from "react-router-dom";
 import {
   Typography,
   Grid,
@@ -122,15 +123,14 @@ const useStyles = makeStyles((theme) => ({
 export default function DeepDiveTabsCard(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-
+  const { assetId } = useParams();
   const [trips, setTrips] = React.useState([]);
 
   React.useEffect((trips) => {
-
-    getAllTripAnalyticData(props.vehicleDetails.assetId).then(response => {
-    })
-
-  })
+    getAllTripAnalyticData(assetId).then((response) => {
+      setTrips(response);
+    });
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -354,10 +354,13 @@ export default function DeepDiveTabsCard(props) {
       <TabPanel style={{ padding: 0 }} value={value} index={1}>
         <Grid container>
           <Grid item lg={12}>
-            {props.trips.map((trip, index) => (
-              <List style={{ paddingTop: 0, paddingBottom: 0 }} key={index}>
+            {trips.map((trip, index) => (
+              <List
+                style={{ paddingTop: 0, paddingBottom: 0 }}
+                key={trip.tripId}
+              >
                 <ListItem
-                  onClick={() => props.tripClickHandler(trip.places)}
+                  onClick={() => props.tripClickHandler(trip.tripId)}
                   style={{ whiteSpace: "noWrap", textOverflow: "ellipsis" }}
                   button
                 >
@@ -372,18 +375,23 @@ export default function DeepDiveTabsCard(props) {
                           <Tooltip
                             arrow
                             placement="bottom-start"
-                            title={trip.startLocation}
+                            title={trip.source}
                             aria-label="end-location"
                           >
                             <TimelineContent
                               className={classes.timelineContent}
                             >
-                              {trip.startLocation}
+                              {trip.source}
                             </TimelineContent>
                           </Tooltip>
                           <div className={classes.dateAndTimeDiv}>
                             <p style={{ marginTop: "0.35rem" }}>
-                              {trip.startDate} {trip.killometers}
+                              {new Date(trip.startDate).getDate() +
+                                "/" +
+                                (new Date(trip.startDate).getMonth() + 1) +
+                                "/" +
+                                new Date(trip.startDate).getFullYear()}{" "}
+                              {`${trip.totalDistance} Kms`}
                             </p>
                           </div>
                         </TimelineItem>
@@ -392,18 +400,25 @@ export default function DeepDiveTabsCard(props) {
                           <Tooltip
                             arrow
                             placement="bottom-start"
-                            title={trip.endLocation}
+                            title={trip.destination}
                             aria-label="end-location"
                           >
                             <TimelineContent
                               className={classes.timelineContent}
                             >
-                              {trip.endLocation}
+                              {trip.destination}
                             </TimelineContent>
                           </Tooltip>
                           <div className={classes.dateAndTimeDiv}>
                             <p style={{ marginTop: "0.35rem" }}>
-                              {trip.endDate} {trip.journeyDuration}
+                              {new Date(trip.endDate).getDate() +
+                                "/" +
+                                (new Date(trip.endDate).getMonth() + 1) +
+                                "/" +
+                                new Date(trip.endDate).getFullYear()}{" "}
+                              {`${new Date(
+                                trip.endDate - trip.startDate
+                              ).getHours()} Hrs`}
                             </p>
                           </div>
                         </TimelineItem>

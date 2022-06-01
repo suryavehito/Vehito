@@ -102,7 +102,7 @@ export default function CustomTabs(props) {
     efficiency: false,
     engineImmobilizer: false,
     tiltAndElevation: false,
-    suddenAccelerationAndHarshBraking: false
+    suddenAccelerationAndHarshBraking: false,
   });
   const [vehicleStatusPercent, setVehicleStatusPercent] = React.useState({
     runningPercent: 0,
@@ -131,37 +131,35 @@ export default function CustomTabs(props) {
 
   const [routes, setRoutes] = React.useState([]);
   const [showRoutes, setShowRoutes] = React.useState(false);
-  const [routesTimeGap, setRouteTimeGap] = React.useState('lasthour'); // in minutes
+  const [routesTimeGap, setRouteTimeGap] = React.useState("lasthour"); // in minutes
 
   useEffect(() => {
+    if (props.vehicleDetails && props.vehicleDetails.imei) {
+      let startTime = "";
+      const endTime = new Date().getTime();
+      switch (routesTimeGap) {
+        case "lasthour":
+          startTime = endTime - 1 * 60 * 60 * 1000;
+          break;
+        case "lastday":
+          startTime = endTime - 24 * 60 * 60 * 1000;
+          break;
+        case "lastweek":
+          startTime = endTime - 168 * 60 * 60 * 1000;
+          break;
+        default:
+          startTime = endTime - 1 * 60 * 60 * 1000;
+          break;
+      }
 
-    if(props.vehicleDetails && props.vehicleDetails.imei){
- 
-    const date = new Date();
-    switch(routesTimeGap){
-      case 'lasthour':
-        date.setHours(date.getHours() - 1);
-        break;
-      case 'lastday':
-        date.setHours(date.getHours() - 24);
-        break;
-      case 'lastweek':
-        date.setHours(date.getHours() - 168);
-        break;
-      default:
-        date.setHours(date.getHours() - 1);
-        break;
+      getLocations(props.vehicleDetails.imei, startTime, endTime).then(
+        (response) => {
+          setRoutes(response.locationStructList || []);
+          setShowRoutes(true);
+        }
+      );
     }
-    
-    const startTime = date.getTime();
-    const endTime = (new Date()).getTime();
-
-    getLocations(props.vehicleDetails.imei, startTime, endTime).then((response) => {
-      setRoutes(response.locationStructList || []);
-      setShowRoutes(true)
-    });
-  }
-  }, [props.assetId])
+  }, [props.assetId]);
 
   useEffect(() => {
     const vehiclesCategory = props.selectedList;
@@ -219,24 +217,24 @@ export default function CustomTabs(props) {
       vehicle.status === "Running"
         ? running++
         : vehicle.status === "Stopped"
-          ? stopped++
-          : faulty++
+        ? stopped++
+        : faulty++
     );
 
     vehiclesArray.map((vehicle) =>
       vehicle.oddometer <= 5000
         ? belowFiveThousand++
         : vehicle.oddometer > 5000 && vehicle.oddometer < 7500
-          ? belowEightThousand++
-          : belowTenThousand++
+        ? belowEightThousand++
+        : belowTenThousand++
     );
 
     vehiclesArray.map((vehicle) =>
       vehicle.fuel <= 200
         ? belowTwoHundred++
         : vehicle.fuel > 200 && vehicle.fuel <= 500
-          ? belowFiveHundred++
-          : belowSevenHundred++
+        ? belowFiveHundred++
+        : belowSevenHundred++
     );
 
     let runningPercent = Math.floor((running / vehiclesArray.length) * 100);
@@ -300,10 +298,6 @@ export default function CustomTabs(props) {
       [name]: true,
     });
   };
-
-  
-  
-  
 
   return (
     <div className={classes.root}>
@@ -399,9 +393,9 @@ export default function CustomTabs(props) {
                 }}
               >
                 {reportsList.trips ||
-                  reportsList.driverBehaviour ||
-                  reportsList.fuel ||
-                  reportsList.efficiency ? (
+                reportsList.driverBehaviour ||
+                reportsList.fuel ||
+                reportsList.efficiency ? (
                   <Fragment>
                     <Typography style={{ marginRight: "0.25rem" }}>
                       Report Time
@@ -471,16 +465,10 @@ export default function CustomTabs(props) {
                   vehicleStatusPercent={vehicleStatusPercent}
                 />
               )}
-              {reportsList.engineImmobilizer && (
-                <EngineImmobilizer />
-              )}
-              {reportsList.tiltAndElevation && (
-                <TiltAndElevation
-                />
-              )}
+              {reportsList.engineImmobilizer && <EngineImmobilizer />}
+              {reportsList.tiltAndElevation && <TiltAndElevation />}
               {reportsList.suddenAccelerationAndHarshBraking && (
-                <SuddenAccelerationAndHarshBraking
-                />
+                <SuddenAccelerationAndHarshBraking />
               )}
             </Grid>
           </Grid>

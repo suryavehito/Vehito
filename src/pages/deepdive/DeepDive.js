@@ -14,7 +14,8 @@ import { data } from "./DeepdiveData";
 import { withStyles } from "@material-ui/core/styles";
 import { useParams } from "react-router-dom";
 import { getLocations } from "../../api/assets.api";
-import moment from 'moment';
+import moment from "moment";
+import { getTripDetailByUsingTripId } from "../../api/trip.api";
 
 const styles = (theme) => ({
   timelineGrid: {
@@ -28,10 +29,9 @@ const styles = (theme) => ({
 });
 
 const DeepDive = (props) => {
-
   const params = useParams();
 
-  sessionStorage.setItem("issuedToken", params.issuedToken)
+  sessionStorage.setItem("issuedToken", params.issuedToken);
 
   const [waypoints, setWayPoints] = useState([]);
 
@@ -49,33 +49,31 @@ const DeepDive = (props) => {
     deepdiveData: data.rpm,
   });
 
-  const [vehicleDetails, setVehicleDetails] = useState({})
+  const [vehicleDetails, setVehicleDetails] = useState({});
 
   const [trips, setTrips] = useState([]);
   const [lastEndTime, setLastEndTime] = useState(null);
 
   useEffect(() => {
-    let startTime = moment().subtract(1, 'h').unix();
+    let startTime = moment().subtract(1, "h").unix();
 
     if (lastEndTime != null) {
-      startTime = lastEndTime
-    }
-    else {
+      startTime = lastEndTime;
+    } else {
       switch (durationValue) {
-        case 'lasthour':
-          startTime = moment().subtract(1, 'h').unix();
+        case "lasthour":
+          startTime = moment().subtract(1, "h").unix();
           break;
-        case 'lastday':
-          startTime = moment().subtract(1, 'd').unix();
+        case "lastday":
+          startTime = moment().subtract(1, "d").unix();
           break;
-        case 'lastweek':
-          startTime = moment().subtract(7, 'd').unix();
+        case "lastweek":
+          startTime = moment().subtract(7, "d").unix();
           break;
         default:
-          startTime = moment().subtract(1, 'm').unix();
+          startTime = moment().subtract(1, "m").unix();
           break;
       }
-
     }
 
     const endTime = moment().unix();
@@ -88,39 +86,64 @@ const DeepDive = (props) => {
     });
   }, [refreshCnt]);
 
-
   useEffect(() => {
-    let startTime = moment().subtract(1, 'h').unix();
+    let startTime = moment().subtract(1, "h").unix();
 
-      switch (durationValue) {
-        case 'lasthour':
-          startTime = moment().subtract(1, 'h').unix();
-          break;
-        case 'lastday':
-          startTime = moment().subtract(1, 'd').unix();
-          break;
-        case 'lastweek':
-          startTime = moment().subtract(7, 'd').unix();
-          break;
-        default:
-          startTime = moment().subtract(1, 'm').unix();
-          break;
-      }
+    switch (durationValue) {
+      case "lasthour":
+        startTime = moment().subtract(1, "h").unix();
+        break;
+      case "lastday":
+        startTime = moment().subtract(1, "d").unix();
+        break;
+      case "lastweek":
+        startTime = moment().subtract(7, "d").unix();
+        break;
+      default:
+        startTime = moment().subtract(1, "m").unix();
+        break;
+    }
 
     const endTime = moment().unix();
 
     getLocations(params.imei, startTime, endTime).then((response) => {
-        setWayPoints(response.locationStructList || []);
-        setLastEndTime(endTime);
+      setWayPoints(response.locationStructList || []);
+      setLastEndTime(endTime);
     });
   }, [durationValue]);
 
   setInterval(() => {
     setRefreshCnt(refreshCnt + 1);
-  }, 60000)
+  }, 60000);
 
-  const tripClickHandler = (waypoints) => {
-    setWayPoints(waypoints);
+  const getLocation = (loc) => {
+    setWayPoints([]);
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode(
+      {
+        address: loc,
+      },
+      function (results) {
+        setWayPoints([
+          ...waypoints,
+          {
+            latitude: results[0].geometry.location.lat(),
+            longitude: results[0].geometry.location.lng(),
+          },
+        ]);
+      }
+    );
+  };
+
+  const tripClickHandler = (tripId) => {
+    const tripDetails = getTripDetailByUsingTripId(tripId);
+    tripDetails.then((res) => {
+      getLocation(res?.startLocation);
+      if (res?.breakPoints && res?.breakPoints !== undefined) {
+        res.breakPoints.map((breakpoint) => getLocation(breakpoint));
+      }
+      getLocation(res?.endLocation);
+    });
   };
 
   const handleChange = (e) => {
@@ -216,15 +239,22 @@ const DeepDive = (props) => {
               variant="h6"
             >
               Deep Dive report:{" "}
-              <span style={{ color: "#111" }}>{vehicleDetails.vehicleName}</span>
+              <span style={{ color: "#111" }}>
+                {vehicleDetails.vehicleName}
+              </span>
             </Typography>
           </Grid>
           <Grid item lg={6} xs={12}>
             <div className="row">
               <div className="col-35">
-                <select id="duration" name="duration" value={durationValue} onChange={(event) => {
-                  setDurationValue(event.target.value);
-                }}>
+                <select
+                  id="duration"
+                  name="duration"
+                  value={durationValue}
+                  onChange={(event) => {
+                    setDurationValue(event.target.value);
+                  }}
+                >
                   <option value="lasthour">Last Hour</option>
                   <option value="lastday">Last Day</option>
                   <option value="lastweek">Last Week</option>
@@ -233,18 +263,12 @@ const DeepDive = (props) => {
             </div>
           </Grid>
           <Grid className="excel-col" item lg={3}>
-            <FontAwesomeIcon
-              style={{ cursor: "pointer" }}
-              icon={faFileExcel}
-            />
+            <FontAwesomeIcon style={{ cursor: "pointer" }} icon={faFileExcel} />
           </Grid>
         </Grid>
         <Grid container>
           <Grid item lg={12} xs={12} style={{ height: "87vh", zIndex: 1 }}>
-            <DeepDiveMaps
-              key={waypoints}
-              waypoints={waypoints}
-            />
+            <DeepDiveMaps key={waypoints} waypoints={waypoints} />
             <DeepDiveTabsCard
               tripClickHandler={tripClickHandler}
               trips={trips}
@@ -350,6 +374,6 @@ const DeepDive = (props) => {
       <Footer />
     </Fragment>
   );
-}
+};
 
 export default withStyles(styles)(DeepDive);

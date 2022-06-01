@@ -38,10 +38,10 @@ export default function VehicleDetailsCard(props) {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [value, setValue] = React.useState("");
+  const [location, setLocation] = React.useState("");
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -57,24 +57,21 @@ export default function VehicleDetailsCard(props) {
 
   const getValue = (data, field) => {
     const { suffix, key, convert } = field;
-    let value = '';
+    let value = "";
     switch (key) {
-      case 'currentLocation':
-        value = data.lat && data.longitude && convert ? convert(data.lat, data.longitude) : '';
-        break;
-      case 'status':
+      case "status":
         switch (data[key]) {
-          case 'H':
-            value = 'Hault';
+          case "H":
+            value = "Hault";
             break;
-          case 'S':
-            value = 'Stopped';
+          case "S":
+            value = "Stopped";
             break;
-          case 'M':
-            value = 'Moving';
+          case "M":
+            value = "Moving";
             break;
           default:
-            value = '';
+            value = "";
             break;
         }
         if (value && convert) {
@@ -82,7 +79,7 @@ export default function VehicleDetailsCard(props) {
         }
         break;
       default:
-        value = data[key] || '';
+        value = data[key] || "";
         if (value && convert) {
           value = convert(value);
         }
@@ -90,105 +87,123 @@ export default function VehicleDetailsCard(props) {
     }
 
     if (value && suffix) {
-      value = `${value} ${suffix}`
+      value = `${value} ${suffix}`;
     }
     return value;
-  }
+  };
 
-  const fields = [{
-    key: "assetName",
-    label: "Asset name",
-    suffix: ""
-  },
-  {
-    key: "regNo",
-    label: "Registration No.",
-    suffix: ""
-  },
-  {
-    key: "fuelLevel",
-    label: "Fuel level",
-    suffix: "%",
-    convert: (value) => {
-      return Math.round(value * 100).toFixed(0);
+  const getLocation = async (lat, lng) => {
+    const geocoder = new window.google.maps.Geocoder();
+    const request = { latLng: { lat: Number(lat), lng: Number(lng) } };
+    const { results } = await geocoder.geocode(request);
+    let returnValue = "";
+    if (results && results[0]) {
+      let adrs_comp = results[0].address_components;
+      let loc_name;
+      let area_name;
+      for (let i = 0; i < adrs_comp.length; i++) {
+        if (adrs_comp[i].types[0] === "locality") {
+          loc_name = adrs_comp[i].long_name;
+        }
+        if (adrs_comp[i].types[0] === "administrative_area_level_1") {
+          area_name = adrs_comp[i].long_name;
+        }
+      }
+      returnValue = `${loc_name}, ${area_name}`;
+    } else {
+      returnValue = "";
     }
-  },
-  {
-    key: "avgSpeed",
-    label: "Avg. speed",
-    suffix: "Km/Hr"
-  },
-  {
-    key: "driverName",
-    label: "Driver",
-    suffix: ""
-  },
-  {
-    key: "dateTime",
-    label: "Time",
-    suffix: ""
-  },
-  {
-    key: "currentLocation",
-    label: "Geofence",
-    suffix: "",
-    // convert: async (lat, lng) => {
+    return returnValue;
+  };
 
-    //     const geocoder = new window.google.maps.Geocoder();
-    //     const request = { 'latLng': { lat: Number(lat), lng: Number(lng) } };
-    //     const { results } = await geocoder.geocode(request);
-    //     let returnValue = ''
-    //     if (results && results[0]) {
-    //       let adrs_comp = results[0].address_components, loc_name, area_name;
-    //       for (let i = 0; i < adrs_comp.length; i++) {
-    //         if (adrs_comp[i].types[0] === "locality") {
-    //           loc_name = adrs_comp[i].long_name;
-    //         }
-    //         if (adrs_comp[i].types[0] === "administrative_area_level_1") {
-    //           area_name = adrs_comp[i].long_name;
-    //         }
-    //       }
-    //       returnValue = `${loc_name}, ${area_name}`;
-    //     }
-    //     else {
-    //       returnValue =  '';
-    //     }
-    //   return returnValue;
-    // }
-  },
-  // {
-  //   key: "address",
-  //   label: "Address"
-  // },
-  {
-    key: "status",
-    label: "Status",
-    suffix: ""
-  },
-  {
-    key: "odometer",
-    label: "Oddometer",
-    suffix: ""
-  },
-  {
-    key: "engHrs",
-    label: "Engine hours",
-    suffix: "Hrs",
-    convert: (value) => {
-      return Math.round(value).toFixed(2);
+  const fields = [
+    {
+      key: "assetName",
+      label: "Asset name",
+      suffix: "",
+    },
+    {
+      key: "regNo",
+      label: "Registration No.",
+      suffix: "",
+    },
+    {
+      key: "fuelLevel",
+      label: "Fuel level",
+      suffix: "%",
+      convert: (value) => {
+        return Math.round(value * 100).toFixed(0);
+      },
+    },
+    {
+      key: "avgSpeed",
+      label: "Avg. speed",
+      suffix: "Km/Hr",
+    },
+    {
+      key: "driverName",
+      label: "Driver",
+      suffix: "",
+    },
+    {
+      key: "dateTime",
+      label: "Time",
+      suffix: "",
+    },
+    {
+      key: "currentLocation",
+      label: "Geofence",
+      suffix: "",
+    },
+    // {
+    //   key: "address",
+    //   label: "Address"
+    // },
+    {
+      key: "status",
+      label: "Status",
+      suffix: "",
+    },
+    {
+      key: "odometer",
+      label: "Oddometer",
+      suffix: "",
+    },
+    {
+      key: "engHrs",
+      label: "Engine hours",
+      suffix: "Hrs",
+      convert: (value) => {
+        return Math.round(value).toFixed(2);
+      },
+    },
+    {
+      key: "backupBattery",
+      label: "Backup battery",
+      suffix: "V",
+    },
+    {
+      key: "vehicleBattery",
+      label: "Battery Voltage",
+      suffix: "V",
+    },
+  ];
+
+  const locationDetails = (lat, long) => {
+    const locationResponse = getLocation(lat, long);
+    locationResponse.then((res) => {
+      setLocation(res);
+    });
+  };
+
+  useEffect(() => {
+    if (props?.vehicleDetails?.lat && props?.vehicleDetails?.longitude) {
+      locationDetails(
+        props?.vehicleDetails?.lat,
+        props?.vehicleDetails?.longitude
+      );
     }
-  },
-  {
-    key: "backupBattery",
-    label: "Backup battery",
-    suffix: "V"
-  },
-  {
-    key: "vehicleBattery",
-    label: "Battery Voltage",
-    suffix: "V"
-  },];
-
+  }, [props?.vehicleDetails?.lat, props?.vehicleDetails?.longitude]);
 
   return (
     <Fragment>
@@ -216,9 +231,9 @@ export default function VehicleDetailsCard(props) {
           subheader={props.vehicleDetails.driver}
         />
         <CardContent>
-          {fields.map(field => {
+          {fields.map((field) => {
             return (
-              <div className={classes.mainDiv}>
+              <div key={field.key} className={classes.mainDiv}>
                 <div className={classes.firstDiv}>
                   <Typography variant="body2" component="p">
                     {field.label}:
@@ -226,11 +241,13 @@ export default function VehicleDetailsCard(props) {
                 </div>
                 <div className={classes.secondDiv}>
                   <Typography variant="body2" component="p">
-                    {getValue(props.vehicleDetails, field)}
+                    {field?.label === "Geofence"
+                      ? location
+                      : getValue(props.vehicleDetails, field)}
                   </Typography>
                 </div>
               </div>
-            )
+            );
           })}
           <Typography component="div">
             <Progress value={props.vehicleDetails.speed} />
@@ -298,7 +315,9 @@ export default function VehicleDetailsCard(props) {
               style={{ textDecoration: "none" }}
               target="_blank"
               rel="noopener noreferrer"
-              href={`/#vehicle/${props.vehicleDetails.assetId}/deepDive/${props.vehicleDetails.imei}/${value}/${sessionStorage.getItem("issuedToken")}`}
+              href={`/#vehicle/${props.vehicleDetails.assetId}/deepDive/${
+                props.vehicleDetails.imei
+              }/${value}/${sessionStorage.getItem("issuedToken")}`}
             >
               <Button disabled={!value} color="primary" variant="contained">
                 Get me my deep dive
