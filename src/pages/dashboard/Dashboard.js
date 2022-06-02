@@ -1,4 +1,3 @@
-
 import React, { Fragment, useEffect, useState } from "react";
 import {
   Grid,
@@ -44,7 +43,11 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CustomSlider from "../../components/slider/CustomSlider";
 import CustomTabs from "./CustomTabs";
 import Badge from "@material-ui/core/Badge";
-import { getAllAsset, getCurrentData, getLocations } from "../../api/assets.api";
+import {
+  getAllAsset,
+  getCurrentData,
+  getLocations,
+} from "../../api/assets.api";
 
 const useStyles = makeStyles((theme) => ({
   mapGrid: {
@@ -103,29 +106,28 @@ const GreenCheckbox = withStyles({
 })((props) => <Checkbox color="default" {...props} />);
 
 const Dashboard = () => {
-  const [settings, setSettings] = useState(
-    [
-      {
-        name: "Show All Vehilces",
-        shortName: "showAll",
-        SettingsList: [],
-      },
-      {
-        name: "Passenger",
-        shortName: "passenger",
-        SettingsList: [],
-      },
-      {
-        name: "LCV",
-        shortName: "lcv",
-        SettingsList: [],
-      },
-      {
-        name: "HCV",
-        shortName: "hcv",
-        SettingsList: [],
-      },
-    ]);
+  const [settings, setSettings] = useState([
+    {
+      name: "Show All Vehilces",
+      shortName: "showAll",
+      SettingsList: [],
+    },
+    {
+      name: "Passenger",
+      shortName: "passenger",
+      SettingsList: [],
+    },
+    {
+      name: "LCV",
+      shortName: "lcv",
+      SettingsList: [],
+    },
+    {
+      name: "HCV",
+      shortName: "hcv",
+      SettingsList: [],
+    },
+  ]);
 
   const [data, setData] = useState({
     settings: [],
@@ -163,21 +165,27 @@ const Dashboard = () => {
     selectedList: "",
   });
 
-
   const getVehicleDetails = () => {
     const allAssets = getAllAsset();
-    allAssets.then((response) => {
-      const tmpSettings = [...settings];
-      tmpSettings[0].SettingsList = response;
-      tmpSettings[1].SettingsList = response.filter(res => res.assetType === 'Passenger');
-      tmpSettings[2].SettingsList = response.filter(res => res.assetType === 'LCV');
-      tmpSettings[3].SettingsList = response.filter(res => res.assetType === 'HCV');
-      setSettings(tmpSettings);
-    }).catch(() => {
-      setSettings([]);
-    });
+    allAssets
+      .then((response) => {
+        const tmpSettings = [...settings];
+        tmpSettings[0].SettingsList = response;
+        tmpSettings[1].SettingsList = response.filter(
+          (res) => res.assetType === "Passenger"
+        );
+        tmpSettings[2].SettingsList = response.filter(
+          (res) => res.assetType === "LCV"
+        );
+        tmpSettings[3].SettingsList = response.filter(
+          (res) => res.assetType === "HCV"
+        );
+        setSettings(tmpSettings);
+      })
+      .catch(() => {
+        setSettings([]);
+      });
   };
-
 
   useEffect(() => {
     getVehicleDetails();
@@ -212,14 +220,13 @@ const Dashboard = () => {
           display: "block",
           vehicleDetails: {
             ...vehicle,
-            ...response
+            ...response,
           },
           status: response.status,
           assetId: vehicle.assetId,
           isMarkerShown: !!response.lat && !!response.longitude,
         });
-      }
-      else {
+      } else {
         setData({
           ...data,
           location: vehicle.currentLocation,
@@ -227,10 +234,9 @@ const Dashboard = () => {
           display: "block",
           vehicleDetails: {},
           status: "",
-          assetId: vehicle.assetId,          
+          assetId: vehicle.assetId,
           isMarkerShown: !!response.lat && !!response.longitude,
         });
-
       }
     });
   };
@@ -262,9 +268,9 @@ const Dashboard = () => {
     }
     settings[0].SettingsList.filter((vehicle) =>
       vehicle.vid.toLowerCase().includes(value) ||
-        vehicle.vid.toUpperCase().includes(value) ||
-        vehicle.status.toLowerCase().includes(value) ||
-        vehicle.status.toUpperCase().includes(value)
+      vehicle.vid.toUpperCase().includes(value) ||
+      vehicle.status.toLowerCase().includes(value) ||
+      vehicle.status.toUpperCase().includes(value)
         ? SettingsArray.push(vehicle)
         : ""
     );
@@ -355,12 +361,12 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -377,10 +383,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -397,10 +403,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -417,10 +423,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -437,8 +443,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -455,119 +461,89 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
 
-      if (
-        data.running &&
-        data.stopped &&
-        data.faulty &&
-        data.battery
-      ) {
+      if (data.running && data.stopped && data.faulty && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.running
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
 
-      if (
-        data.running &&
-        data.stopped &&
-        data.battery &&
-        data.fuel
-      ) {
+      if (data.running && data.stopped && data.battery && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.battery &&
-        data.oddometer
-      ) {
+      if (data.running && data.stopped && data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
 
-      if (
-        data.running &&
-        data.faulty &&
-        data.battery &&
-        data.fuel
-      ) {
+      if (data.running && data.faulty && data.battery && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.faulty &&
-        data.battery &&
-        data.oddometer
-      ) {
+      if (data.running && data.faulty && data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -577,10 +553,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -589,10 +565,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -601,12 +577,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -617,8 +593,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -628,8 +604,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -639,8 +615,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "faulty" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -651,8 +627,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -662,8 +638,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -673,8 +649,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "faulty" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -684,10 +660,10 @@ const Dashboard = () => {
       if (data.running && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -696,10 +672,10 @@ const Dashboard = () => {
       if (data.fuel && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -708,28 +684,23 @@ const Dashboard = () => {
       if (data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
 
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.stopped
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -738,10 +709,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -750,10 +721,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -762,12 +733,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -776,10 +747,10 @@ const Dashboard = () => {
       if (data.stopped && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -788,10 +759,10 @@ const Dashboard = () => {
       if (data.fuel && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -800,28 +771,23 @@ const Dashboard = () => {
       if (data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
 
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.faulty
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -830,10 +796,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -842,10 +808,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -854,12 +820,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -868,10 +834,10 @@ const Dashboard = () => {
       if (data.faulty && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -880,10 +846,10 @@ const Dashboard = () => {
       if (data.fuel && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -892,8 +858,8 @@ const Dashboard = () => {
       if (data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -903,11 +869,11 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -916,9 +882,9 @@ const Dashboard = () => {
       if (data.battery && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -927,9 +893,9 @@ const Dashboard = () => {
       if (data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -938,11 +904,11 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -951,9 +917,9 @@ const Dashboard = () => {
       if (data.fuel) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -962,9 +928,9 @@ const Dashboard = () => {
       if (data.oddometer) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -973,7 +939,7 @@ const Dashboard = () => {
       if (data.batteryMinRange < data.batteryMaxRange) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange
+          vehicle.battery <= data.batteryMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1015,12 +981,12 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1037,10 +1003,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1057,10 +1023,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1077,10 +1043,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1096,12 +1062,12 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1117,120 +1083,90 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.faulty &&
-        data.fuel
-      ) {
+      if (data.running && data.stopped && data.faulty && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.running
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.battery &&
-        data.fuel
-      ) {
+      if (data.running && data.stopped && data.battery && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.battery &&
-        data.oddometer
-      ) {
+      if (data.running && data.stopped && data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.faulty &&
-        data.battery &&
-        data.fuel
-      ) {
+      if (data.running && data.faulty && data.battery && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.faulty &&
-        data.battery &&
-        data.oddometer
-      ) {
+      if (data.running && data.faulty && data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1239,10 +1175,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1251,10 +1187,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1263,12 +1199,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1278,8 +1214,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1289,8 +1225,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1300,8 +1236,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "faulty" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1310,10 +1246,10 @@ const Dashboard = () => {
       if (data.running && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1322,10 +1258,10 @@ const Dashboard = () => {
       if (data.fuel && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1334,27 +1270,22 @@ const Dashboard = () => {
       if (data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.stopped
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1363,10 +1294,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1375,10 +1306,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1387,12 +1318,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1401,10 +1332,10 @@ const Dashboard = () => {
       if (data.stopped && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1413,10 +1344,10 @@ const Dashboard = () => {
       if (data.fuel && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1425,27 +1356,22 @@ const Dashboard = () => {
       if (data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.faulty
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1454,10 +1380,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1466,10 +1392,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1478,12 +1404,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1492,10 +1418,10 @@ const Dashboard = () => {
       if (data.faulty && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1504,10 +1430,10 @@ const Dashboard = () => {
       if (data.fuel && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1516,8 +1442,8 @@ const Dashboard = () => {
       if (data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1526,11 +1452,11 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1539,9 +1465,9 @@ const Dashboard = () => {
       if (data.battery && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1550,11 +1476,11 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1563,11 +1489,11 @@ const Dashboard = () => {
       if (data.battery && data.oddometer) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1576,9 +1502,9 @@ const Dashboard = () => {
       if (data.battery) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1587,9 +1513,9 @@ const Dashboard = () => {
       if (data.oddometer) {
         data.settings.filter((vehicle) =>
           vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.oddometer <= data.oddometerMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1598,7 +1524,7 @@ const Dashboard = () => {
       if (data.fuelStatusMinRange < data.fuelStatusMaxRange) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1640,12 +1566,12 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1662,10 +1588,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1682,10 +1608,10 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1702,27 +1628,22 @@ const Dashboard = () => {
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.faulty &&
-        data.oddometer
-      ) {
+      if (data.running && data.stopped && data.faulty && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1738,12 +1659,12 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1759,141 +1680,106 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.running
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.battery &&
-        data.oddometer
-      ) {
+      if (data.running && data.stopped && data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.stopped &&
-        data.fuel &&
-        data.oddometer
-      ) {
+      if (data.running && data.stopped && data.fuel && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.faulty &&
-        data.battery &&
-        data.oddometer
-      ) {
+      if (data.running && data.faulty && data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.running &&
-        data.faulty &&
-        data.fuel &&
-        data.oddometer
-      ) {
+      if (data.running && data.faulty && data.fuel && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.stopped
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
         return setData({ ...data, settings: SettingsArray });
       }
-      if (
-        data.battery &&
-        data.fuel &&
-        data.oddometer &&
-        data.faulty
-      ) {
+      if (data.battery && data.fuel && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1902,10 +1788,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1914,10 +1800,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1926,12 +1812,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1941,8 +1827,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1952,8 +1838,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "running" ||
             vehicle.status.toLowerCase() === "faulty") &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1963,8 +1849,8 @@ const Dashboard = () => {
         settings[0].SettingsList.filter((vehicle) =>
           (vehicle.status.toLowerCase() === "faulty" ||
             vehicle.status.toLowerCase() === "stopped") &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1973,10 +1859,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1985,10 +1871,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -1997,12 +1883,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2011,11 +1897,11 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.fuel) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2024,10 +1910,10 @@ const Dashboard = () => {
       if (data.battery && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2036,10 +1922,10 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2048,12 +1934,12 @@ const Dashboard = () => {
       if (data.battery && data.fuel && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2062,10 +1948,10 @@ const Dashboard = () => {
       if (data.running && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2074,10 +1960,10 @@ const Dashboard = () => {
       if (data.fuel && data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2086,10 +1972,10 @@ const Dashboard = () => {
       if (data.stopped && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2098,10 +1984,10 @@ const Dashboard = () => {
       if (data.fuel && data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2110,10 +1996,10 @@ const Dashboard = () => {
       if (data.faulty && data.battery) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery >= data.batteryMinRange &&
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2122,10 +2008,10 @@ const Dashboard = () => {
       if (data.fuel && data.faulty) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "faulty" &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2134,9 +2020,9 @@ const Dashboard = () => {
       if (data.battery && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2145,11 +2031,11 @@ const Dashboard = () => {
       if (data.fuel && data.oddometer) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2158,11 +2044,11 @@ const Dashboard = () => {
       if (data.battery && data.fuel) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2171,8 +2057,8 @@ const Dashboard = () => {
       if (data.running) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "running" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2181,8 +2067,8 @@ const Dashboard = () => {
       if (data.stopped) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.status.toLowerCase() === "stopped" &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2191,9 +2077,9 @@ const Dashboard = () => {
       if (data.battery) {
         data.settings.filter((vehicle) =>
           vehicle.battery >= data.batteryMinRange &&
-            vehicle.battery <= data.batteryMaxRange &&
-            vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.battery <= data.batteryMaxRange &&
+          vehicle.oddometer >= data.oddometerMinRange &&
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2202,9 +2088,9 @@ const Dashboard = () => {
       if (data.fuel) {
         data.settings.filter((vehicle) =>
           vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange &&
-            vehicle.fuel >= data.fuelStatusMinRange &&
-            vehicle.fuel <= data.fuelStatusMaxRange
+          vehicle.oddometer <= data.oddometerMaxRange &&
+          vehicle.fuel >= data.fuelStatusMinRange &&
+          vehicle.fuel <= data.fuelStatusMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2213,7 +2099,7 @@ const Dashboard = () => {
       if (data.oddometerMinRange < data.oddometerMaxRange) {
         settings[0].SettingsList.filter((vehicle) =>
           vehicle.oddometer >= data.oddometerMinRange &&
-            vehicle.oddometer <= data.oddometerMaxRange
+          vehicle.oddometer <= data.oddometerMaxRange
             ? SettingsArray.push(vehicle)
             : ""
         );
@@ -2235,20 +2121,20 @@ const Dashboard = () => {
         ? "battery"
         : e.target.name === "fuelStatusMinRange" ||
           e.target.name === "fuelStatusMaxRange"
-          ? "fuel"
-          : "oddometer";
+        ? "fuel"
+        : "oddometer";
 
     if (data.running && data.stopped && data.faulty) {
       settings[0].SettingsList.filter((vehicle) =>
         (vehicle.status.toLowerCase() === "running" ||
           vehicle.status.toLowerCase() === "stopped" ||
           vehicle.status.toLowerCase() === "faulty") &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2258,12 +2144,12 @@ const Dashboard = () => {
       settings[0].SettingsList.filter((vehicle) =>
         (vehicle.status.toLowerCase() === "running" ||
           vehicle.status.toLowerCase() === "stopped") &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2273,12 +2159,12 @@ const Dashboard = () => {
       settings[0].SettingsList.filter((vehicle) =>
         (vehicle.status.toLowerCase() === "running" ||
           vehicle.status.toLowerCase() === "faulty") &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2288,12 +2174,12 @@ const Dashboard = () => {
       settings[0].SettingsList.filter((vehicle) =>
         (vehicle.status.toLowerCase() === "stopped" ||
           vehicle.status.toLowerCase() === "faulty") &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2302,12 +2188,12 @@ const Dashboard = () => {
     if (data.running) {
       settings[0].SettingsList.filter((vehicle) =>
         vehicle.status.toLowerCase() === "running" &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2316,12 +2202,12 @@ const Dashboard = () => {
     if (data.stopped) {
       settings[0].SettingsList.filter((vehicle) =>
         vehicle.status.toLowerCase() === "stopped" &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2330,12 +2216,12 @@ const Dashboard = () => {
     if (data.faulty) {
       settings[0].SettingsList.filter((vehicle) =>
         vehicle.status.toLowerCase() === "faulty" &&
-          vehicle.battery >= data.batteryMinRange &&
-          vehicle.battery <= data.batteryMaxRange &&
-          vehicle.fuel >= data.fuelStatusMinRange &&
-          vehicle.fuel <= data.fuelStatusMaxRange &&
-          vehicle.oddometer >= data.oddometerMinRange &&
-          vehicle.oddometer <= data.oddometerMaxRange
+        vehicle.battery >= data.batteryMinRange &&
+        vehicle.battery <= data.batteryMaxRange &&
+        vehicle.fuel >= data.fuelStatusMinRange &&
+        vehicle.fuel <= data.fuelStatusMaxRange &&
+        vehicle.oddometer >= data.oddometerMinRange &&
+        vehicle.oddometer <= data.oddometerMaxRange
           ? SettingsArray.push(vehicle)
           : ""
       );
@@ -2344,11 +2230,11 @@ const Dashboard = () => {
 
     settings[0].SettingsList.filter((vehicle) =>
       vehicle.battery >= data.batteryMinRange &&
-        vehicle.battery <= data.batteryMaxRange &&
-        vehicle.fuel >= data.fuelStatusMinRange &&
-        vehicle.fuel <= data.fuelStatusMaxRange &&
-        vehicle.oddometer >= data.oddometerMinRange &&
-        vehicle.oddometer <= data.oddometerMaxRange
+      vehicle.battery <= data.batteryMaxRange &&
+      vehicle.fuel >= data.fuelStatusMinRange &&
+      vehicle.fuel <= data.fuelStatusMaxRange &&
+      vehicle.oddometer >= data.oddometerMinRange &&
+      vehicle.oddometer <= data.oddometerMaxRange
         ? SettingsArray.push(vehicle)
         : ""
     );
@@ -2383,12 +2269,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2410,12 +2296,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2437,12 +2323,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2464,12 +2350,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2491,12 +2377,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2518,12 +2404,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty" ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2545,12 +2431,12 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2570,12 +2456,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2595,12 +2481,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2620,12 +2506,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2645,12 +2531,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2670,12 +2556,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2695,12 +2581,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2720,12 +2606,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2745,12 +2631,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2771,10 +2657,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2795,10 +2681,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2819,10 +2705,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2843,10 +2729,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2867,10 +2753,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2891,10 +2777,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2915,10 +2801,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2939,10 +2825,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2963,10 +2849,10 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -2985,10 +2871,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3007,10 +2893,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3029,10 +2915,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3051,10 +2937,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3073,10 +2959,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3095,10 +2981,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3117,10 +3003,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3139,10 +3025,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3161,10 +3047,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3183,10 +3069,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3205,10 +3091,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3227,10 +3113,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3249,10 +3135,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3271,10 +3157,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3293,10 +3179,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3315,10 +3201,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3337,10 +3223,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3359,10 +3245,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3382,12 +3268,12 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3407,12 +3293,12 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3432,8 +3318,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3453,8 +3339,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3474,8 +3360,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3495,8 +3381,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3516,8 +3402,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3537,8 +3423,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3558,8 +3444,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3579,8 +3465,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3600,8 +3486,8 @@ const Dashboard = () => {
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3611,16 +3497,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.running &&
-          e.target.name === "stopped"
-        ) {
+        if (data.battery && data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3630,16 +3512,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.running &&
-          e.target.name === "faulty"
-        ) {
+        if (data.battery && data.running && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3649,16 +3527,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.stopped &&
-          e.target.name === "faulty"
-        ) {
+        if (data.battery && data.stopped && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3668,16 +3542,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.stopped &&
-          e.target.name === "running"
-        ) {
+        if (data.battery && data.stopped && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3687,16 +3557,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.faulty &&
-          e.target.name === "running"
-        ) {
+        if (data.battery && data.faulty && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3706,16 +3572,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.faulty &&
-          e.target.name === "stopped"
-        ) {
+        if (data.battery && data.faulty && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3725,16 +3587,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.running &&
-          e.target.name === "stopped"
-        ) {
+        if (data.fuel && data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3744,16 +3602,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.running &&
-          e.target.name === "faulty"
-        ) {
+        if (data.fuel && data.running && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3763,16 +3617,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.stopped &&
-          e.target.name === "faulty"
-        ) {
+        if (data.fuel && data.stopped && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3782,16 +3632,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.stopped &&
-          e.target.name === "running"
-        ) {
+        if (data.fuel && data.stopped && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3801,16 +3647,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.faulty &&
-          e.target.name === "running"
-        ) {
+        if (data.fuel && data.faulty && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3820,16 +3662,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.faulty &&
-          e.target.name === "stopped"
-        ) {
+        if (data.fuel && data.faulty && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3839,16 +3677,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.running &&
-          e.target.name === "stopped"
-        ) {
+        if (data.oddometer && data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3858,16 +3692,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.running &&
-          e.target.name === "faulty"
-        ) {
+        if (data.oddometer && data.running && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3877,16 +3707,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.stopped &&
-          e.target.name === "faulty"
-        ) {
+        if (data.oddometer && data.stopped && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3896,16 +3722,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.stopped &&
-          e.target.name === "running"
-        ) {
+        if (data.oddometer && data.stopped && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3915,16 +3737,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.faulty &&
-          e.target.name === "running"
-        ) {
+        if (data.oddometer && data.faulty && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3934,16 +3752,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.faulty &&
-          e.target.name === "stopped"
-        ) {
+        if (data.oddometer && data.faulty && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3962,10 +3776,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -3984,10 +3798,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4006,10 +3820,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4019,16 +3833,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.running &&
-          e.target.name === "stopped"
-        ) {
+        if (data.battery && data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4038,16 +3848,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.battery &&
-          data.running &&
-          e.target.name === "faulty"
-        ) {
+        if (data.battery && data.running && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4057,16 +3863,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.fuel &&
-          data.running &&
-          e.target.name === "stopped"
-        ) {
+        if (data.fuel && data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4076,16 +3878,12 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.oddometer &&
-          data.running &&
-          e.target.name === "stopped"
-        ) {
+        if (data.oddometer && data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === e.target.name ||
               vehicle.status.toLowerCase() === "running") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.battery <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.battery <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4095,15 +3893,11 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.running &&
-          data.stopped &&
-          e.target.name === "faulty"
-        ) {
+        if (data.running && data.stopped && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "running" ||
-              vehicle.status.toLowerCase() === "stopped"
+            vehicle.status.toLowerCase() === "running" ||
+            vehicle.status.toLowerCase() === "stopped"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4113,15 +3907,11 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.running &&
-          data.faulty &&
-          e.target.name === "stopped"
-        ) {
+        if (data.running && data.faulty && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "running" ||
-              vehicle.status.toLowerCase() === "faulty"
+            vehicle.status.toLowerCase() === "running" ||
+            vehicle.status.toLowerCase() === "faulty"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4131,15 +3921,11 @@ const Dashboard = () => {
             settings: SettingsArray,
           });
         }
-        if (
-          data.stopped &&
-          data.faulty &&
-          e.target.name === "running"
-        ) {
+        if (data.stopped && data.faulty && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "stopped" ||
-              vehicle.status.toLowerCase() === "faulty"
+            vehicle.status.toLowerCase() === "stopped" ||
+            vehicle.status.toLowerCase() === "faulty"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4157,8 +3943,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4176,8 +3962,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4195,8 +3981,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4209,7 +3995,7 @@ const Dashboard = () => {
         if (data.running && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "running"
+            vehicle.status.toLowerCase() === "running"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4222,7 +4008,7 @@ const Dashboard = () => {
         if (data.running && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "running"
+            vehicle.status.toLowerCase() === "running"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4235,7 +4021,7 @@ const Dashboard = () => {
         if (data.stopped && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "stopped"
+            vehicle.status.toLowerCase() === "stopped"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4248,7 +4034,7 @@ const Dashboard = () => {
         if (data.stopped && e.target.name === "faulty") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "stopped"
+            vehicle.status.toLowerCase() === "stopped"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4261,7 +4047,7 @@ const Dashboard = () => {
         if (data.faulty && e.target.name === "stopped") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "faulty"
+            vehicle.status.toLowerCase() === "faulty"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4274,7 +4060,7 @@ const Dashboard = () => {
         if (data.faulty && e.target.name === "running") {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === e.target.name ||
-              vehicle.status.toLowerCase() === "faulty"
+            vehicle.status.toLowerCase() === "faulty"
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4346,12 +4132,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4372,12 +4158,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4398,12 +4184,12 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4423,10 +4209,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4446,10 +4232,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4469,10 +4255,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4492,10 +4278,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4515,10 +4301,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4538,10 +4324,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4561,10 +4347,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4584,10 +4370,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4607,10 +4393,10 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4629,12 +4415,12 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4653,12 +4439,12 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4677,12 +4463,12 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4700,10 +4486,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4721,10 +4507,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange &&
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4742,10 +4528,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4763,10 +4549,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4784,10 +4570,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange &&
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4805,10 +4591,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4826,10 +4612,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4847,10 +4633,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange &&
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4868,10 +4654,10 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4890,8 +4676,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4910,8 +4696,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4930,8 +4716,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4950,8 +4736,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4970,8 +4756,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -4990,8 +4776,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5010,8 +4796,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "stopped") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5030,8 +4816,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "running" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5050,8 +4836,8 @@ const Dashboard = () => {
           settings[0].SettingsList.filter((vehicle) =>
             (vehicle.status.toLowerCase() === "stopped" ||
               vehicle.status.toLowerCase() === "faulty") &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5071,11 +4857,11 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5092,8 +4878,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5110,8 +4896,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5128,8 +4914,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery >= data.batteryMinRange &&
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5146,8 +4932,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5164,8 +4950,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5182,8 +4968,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5200,8 +4986,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "running" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5218,8 +5004,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "stopped" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5236,8 +5022,8 @@ const Dashboard = () => {
         ) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.status.toLowerCase() === "faulty" &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5250,9 +5036,9 @@ const Dashboard = () => {
         if (data.battery && data.fuel) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.fuel >= data.fuelStatusMinRange &&
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5265,9 +5051,9 @@ const Dashboard = () => {
         if (data.battery && data.oddometer) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.battery <= data.batteryMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5280,9 +5066,9 @@ const Dashboard = () => {
         if (data.fuel && data.oddometer) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange &&
-              vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.fuel <= data.fuelStatusMaxRange &&
+            vehicle.oddometer >= data.oddometerMinRange &&
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5295,7 +5081,7 @@ const Dashboard = () => {
         if (data.battery) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.battery >= data.batteryMinRange &&
-              vehicle.battery <= data.batteryMaxRange
+            vehicle.battery <= data.batteryMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5308,7 +5094,7 @@ const Dashboard = () => {
         if (data.fuel) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.fuel >= data.fuelStatusMinRange &&
-              vehicle.fuel <= data.fuelStatusMaxRange
+            vehicle.fuel <= data.fuelStatusMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5321,7 +5107,7 @@ const Dashboard = () => {
         if (data.oddometer) {
           settings[0].SettingsList.filter((vehicle) =>
             vehicle.oddometer >= data.oddometerMinRange &&
-              vehicle.oddometer <= data.oddometerMaxRange
+            vehicle.oddometer <= data.oddometerMaxRange
               ? SettingsArray.push(vehicle)
               : ""
           );
@@ -5367,7 +5153,6 @@ const Dashboard = () => {
   const classes = useStyles();
   const open = Boolean(data.anchorEl);
   const id = open ? "simple-popover" : undefined;
-
 
   return (
     <Fragment>
@@ -5436,10 +5221,7 @@ const Dashboard = () => {
               <Card className={classes.root} variant="outlined">
                 <CardHeader
                   action={
-                    <IconButton
-                      onClick={handleClose}
-                      aria-label="close-filter"
-                    >
+                    <IconButton onClick={handleClose} aria-label="close-filter">
                       <CloseIcon />
                     </IconButton>
                   }
@@ -5625,10 +5407,7 @@ const Dashboard = () => {
                 </CardContent>
                 <Divider />
                 <CardActions style={{ justifyContent: "center" }}>
-                  <Button
-                    onClick={resetAllClickHandler}
-                    variant="outlined"
-                  >
+                  <Button onClick={resetAllClickHandler} variant="outlined">
                     Reset All
                   </Button>
                 </CardActions>
@@ -5685,16 +5464,16 @@ const Dashboard = () => {
                               vehicle.name === "Passenger"
                                 ? settings[1].SettingsList.length
                                 : vehicle.name === "LCV"
-                                  ? settings[2].SettingsList.length
-                                  : vehicle.name === "HCV"
-                                    ? settings[3].SettingsList.length
-                                    : settings[0].SettingsList.length
+                                ? settings[2].SettingsList.length
+                                : vehicle.name === "HCV"
+                                ? settings[3].SettingsList.length
+                                : settings[0].SettingsList.length
                             }
                             color="primary"
                           />
                         </ListItemText>
                         {data.shortName === vehicle.shortName &&
-                          data.expanded ? (
+                        data.expanded ? (
                           <ExpandLess />
                         ) : (
                           <ExpandMore />
@@ -5703,8 +5482,7 @@ const Dashboard = () => {
                       <Collapse
                         style={{ maxHeight: "24.5rem", overflow: "scroll" }}
                         in={
-                          data.shortName === vehicle.shortName &&
-                          data.expanded
+                          data.shortName === vehicle.shortName && data.expanded
                         }
                         timeout="auto"
                         unmountOnExit={true}
@@ -5713,9 +5491,7 @@ const Dashboard = () => {
                           <ListItem
                             key={vehicle.assetId}
                             button
-                            onClick={() =>
-                              onListItemClickHandler(vehicle)
-                            }
+                            onClick={() => onListItemClickHandler(vehicle)}
                             style={{ justifyContent: "space-between" }}
                           >
                             <div
@@ -5726,13 +5502,14 @@ const Dashboard = () => {
                             >
                               <FontAwesomeIcon
                                 style={{
-                                  color:
-                                    vehicle.status ? vehicle.status.toLowerCase() === "running"
+                                  color: vehicle.status
+                                    ? vehicle.status.toLowerCase() === "running"
                                       ? "green"
                                       : vehicle.status.toLowerCase() ===
                                         "stopped"
-                                        ? "red"
-                                        : "gray" : "gray",
+                                      ? "red"
+                                      : "gray"
+                                    : "gray",
                                 }}
                                 icon={faMinusCircle}
                               />
@@ -5771,8 +5548,8 @@ const Dashboard = () => {
                               vehicle.status.toLowerCase() === "running"
                                 ? "green"
                                 : vehicle.status.toLowerCase() === "stopped"
-                                  ? "red"
-                                  : "gray",
+                                ? "red"
+                                : "gray",
                           }}
                           icon={faMinusCircle}
                         />
@@ -5825,6 +5602,6 @@ const Dashboard = () => {
       <Footer />
     </Fragment>
   );
-}
+};
 
 export default Dashboard;

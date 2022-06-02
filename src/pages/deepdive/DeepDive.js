@@ -13,7 +13,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { data } from "./DeepdiveData";
 import { withStyles } from "@material-ui/core/styles";
 import { useParams } from "react-router-dom";
-import { getLocations } from "../../api/assets.api";
+import { getCurrentData, getLocations } from "../../api/assets.api";
 import moment from "moment";
 import { getTripDetailByUsingTripId } from "../../api/trip.api";
 
@@ -49,10 +49,14 @@ const DeepDive = (props) => {
     deepdiveData: data.rpm,
   });
 
-  const [vehicleDetails, setVehicleDetails] = useState({});
+  const { assetId } = useParams();
+
+  const [vehicleDetails, setVehicleDetails] = useState(null);
 
   const [trips, setTrips] = useState([]);
   const [lastEndTime, setLastEndTime] = useState(null);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     let startTime = moment().subtract(1, "h").unix();
@@ -77,6 +81,10 @@ const DeepDive = (props) => {
     }
 
     const endTime = moment().unix();
+
+    const vehicleDetails = getCurrentData(assetId).then((res) => {
+      setVehicleDetails(res);
+    });
 
     getLocations(params.imei, startTime, endTime).then((response) => {
       if (response.locationStructList) {
@@ -238,10 +246,7 @@ const DeepDive = (props) => {
               style={{ paddingTop: "1rem", color: "green" }}
               variant="h6"
             >
-              Deep Dive report:{" "}
-              <span style={{ color: "#111" }}>
-                {vehicleDetails.vehicleName}
-              </span>
+              Deep Dive report: <span style={{ color: "#111" }}></span>
             </Typography>
           </Grid>
           <Grid item lg={6} xs={12}>
@@ -269,11 +274,13 @@ const DeepDive = (props) => {
         <Grid container>
           <Grid item lg={12} xs={12} style={{ height: "87vh", zIndex: 1 }}>
             <DeepDiveMaps key={waypoints} waypoints={waypoints} />
-            <DeepDiveTabsCard
-              tripClickHandler={tripClickHandler}
-              trips={trips}
-              vehicleDetails={vehicleDetails}
-            />
+            {vehicleDetails !== null && (
+              <DeepDiveTabsCard
+                tripClickHandler={tripClickHandler}
+                trips={trips}
+                vehicleDetails={vehicleDetails}
+              />
+            )}
           </Grid>
         </Grid>
         <Grid container>

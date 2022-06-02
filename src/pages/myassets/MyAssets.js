@@ -18,7 +18,7 @@ import Footer from "../../components/footer/Footer";
 import CustomFilterMenu from "../../components/menu/CustomFilterMenu";
 import { Container, Grid } from "@material-ui/core";
 import { getAllAsset } from "../../api/assets.api";
-import DriveEtaIcon from '@material-ui/icons/DriveEta';
+import DriveEtaIcon from "@material-ui/icons/DriveEta";
 
 const styles = (theme) => ({
   vehicleDetailsCard: {
@@ -37,17 +37,16 @@ const styles = (theme) => ({
     display: "flex",
     alignItems: "center",
     padding: "0px 20px",
-    marginTop: "1rem"
-  }
+    marginTop: "1rem",
+  },
 });
 
 const MyAssets = (props) => {
-
   const [vehicleDetails, setVehicalDetails] = useState([]);
 
   const [cards, setCards] = useState(null);
 
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState([]);
 
   const [mounted, setMounted] = useState(false);
 
@@ -56,15 +55,15 @@ const MyAssets = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => { })
+    setTimeout(() => {});
     getVehicleDetails();
     noOfColumns();
-    setMounted(true)
+    setMounted(true);
     //when the window is resized calls the noOfColumns method
     window.addEventListener("resize", noOfColumns);
     return () => {
       window.removeEventListener("resize", noOfColumns);
-    }
+    };
   }, []);
 
   const onTagsChange = (event, values) => {
@@ -101,7 +100,7 @@ const MyAssets = (props) => {
 
   const addClick = () => {
     history.push("/vehicle/myassets/new");
-  }
+  };
 
   //method updates the no columns according to the window size
   const noOfColumns = () => {
@@ -116,7 +115,7 @@ const MyAssets = (props) => {
     }
 
     if (window.innerWidth >= 1001 && window.innerWidth <= 1270) {
-      setCards(3)
+      setCards(3);
       return;
     }
 
@@ -125,7 +124,7 @@ const MyAssets = (props) => {
       return;
     }
     if (window.innerWidth >= 1530) {
-      setCards(5)
+      setCards(5);
       return;
     }
   };
@@ -133,11 +132,13 @@ const MyAssets = (props) => {
   //fetches the restaurants from backend
   const getVehicleDetails = () => {
     const allAssets = getAllAsset();
-    allAssets.then((response) => {
-      setVehicalDetails(response || []);
-    }).catch(() => {
-      setVehicalDetails([]);
-    });
+    allAssets
+      .then((response) => {
+        setVehicalDetails(response || []);
+      })
+      .catch(() => {
+        setVehicalDetails([]);
+      });
   };
 
   // redirects to vehicle details page with vehicle id
@@ -156,7 +157,7 @@ const MyAssets = (props) => {
           lg={4}
           xs={12}
           style={{
-            margin: "auto"
+            margin: "auto",
           }}
         >
           <input
@@ -172,7 +173,7 @@ const MyAssets = (props) => {
           item
           xs={"auto"}
           style={{
-            marginRight: "1rem"
+            marginRight: "1rem",
           }}
         >
           <CustomFilterMenu
@@ -189,7 +190,7 @@ const MyAssets = (props) => {
           item
           xs={"auto"}
           style={{
-            marginRight: "1rem"
+            marginRight: "1rem",
           }}
         >
           <Button
@@ -211,19 +212,28 @@ const MyAssets = (props) => {
               <GridListTile key={"vehicle" + vehicleDetails.assetId}>
                 <Card className={classes.vehicleDetailsCard}>
                   <CardActionArea>
-                    {(vehicleDetails.imgUrl1 || vehicleDetails.imgUrl2 || vehicleDetails.imgUrl3) ? <CardMedia
-                      component="img"
-                      height={160}
-                      image={vehicleDetails.imgUrl1 || vehicleDetails.imgUrl2 || vehicleDetails.imgUrl3}
-                      title={vehicleDetails.model}
-                    /> :
+                    {vehicleDetails.imgUrl1 ||
+                    vehicleDetails.imgUrl2 ||
+                    vehicleDetails.imgUrl3 ? (
+                      <CardMedia
+                        component="img"
+                        height={160}
+                        image={
+                          vehicleDetails.imgUrl1 ||
+                          vehicleDetails.imgUrl2 ||
+                          vehicleDetails.imgUrl3
+                        }
+                        title={vehicleDetails.model}
+                      />
+                    ) : (
                       <CardMedia
                         component={DriveEtaIcon}
                         style={{
-                          height: '160px',
-                          width: '100%'
+                          height: "160px",
+                          width: "100%",
                         }}
-                      />}
+                      />
+                    )}
                     <CardContent>
                       <div className="vehicle-title-div">
                         <Typography gutterBottom variant="h5" component="h2">
@@ -246,7 +256,9 @@ const MyAssets = (props) => {
                     <CardActions>
                       <Button
                         component="div"
-                        onClick={() => vehicleDetailsClick(vehicleDetails.assetId)}
+                        onClick={() =>
+                          vehicleDetailsClick(vehicleDetails.assetId)
+                        }
                         size="small"
                         color="primary"
                       >
@@ -265,6 +277,6 @@ const MyAssets = (props) => {
   ) : (
     ""
   );
-}
+};
 
 export default withStyles(styles)(MyAssets);

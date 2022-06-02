@@ -14,6 +14,7 @@ import Popover from "@material-ui/core/Popover";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -311,18 +312,19 @@ export default function VehicleDetailsCard(props) {
             </RadioGroup>
           </CardContent>
           <CardActions style={{ justifyContent: "center" }}>
-            <a
+            <Link
               style={{ textDecoration: "none" }}
               target="_blank"
-              rel="noopener noreferrer"
-              href={`/#vehicle/${props.vehicleDetails.assetId}/deepDive/${
-                props.vehicleDetails.imei
-              }/${value}/${sessionStorage.getItem("issuedToken")}`}
+              to={{
+                pathname: `/vehicle/${props.vehicleDetails.assetId}/deepDive/${
+                  props.vehicleDetails.imei
+                }/${value}/${sessionStorage.getItem("issuedToken")}`,
+              }}
             >
               <Button disabled={!value} color="primary" variant="contained">
                 Get me my deep dive
               </Button>
-            </a>
+            </Link>
           </CardActions>
         </Card>
       </Popover>

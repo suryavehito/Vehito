@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   makeStyles,
@@ -29,6 +29,7 @@ import TimelineContent from "@material-ui/lab/TimelineContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import "./DeepDiveTabsCard.css";
 import { getAllTripAnalyticData } from "../../api/trip.api";
+import { getLocation } from "../../utils/getLocation";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -125,11 +126,16 @@ export default function DeepDiveTabsCard(props) {
   const [value, setValue] = React.useState(0);
   const { assetId } = useParams();
   const [trips, setTrips] = React.useState([]);
+  const [location, setLocation] = useState("");
 
   React.useEffect((trips) => {
     getAllTripAnalyticData(assetId).then((response) => {
       setTrips(response);
     });
+    getLocation(
+      props?.vehicleDetails?.lat,
+      props?.vehicleDetails?.longitude
+    ).then((rs) => setLocation(rs));
   }, []);
 
   const handleChange = (event, newValue) => {
@@ -166,7 +172,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.driver}
+              {props.vehicleDetails.driverName ?? ""}
             </Typography>
           </div>
         </div>
@@ -178,7 +184,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.time}
+              {props.vehicleDetails.dateTime ?? ""}
             </Typography>
           </div>
         </div>
@@ -190,7 +196,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.geofence}
+              {location ?? ""}
             </Typography>
           </div>
         </div>
@@ -202,7 +208,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.location}
+              {props.vehicleDetails.location ?? ""}
             </Typography>
           </div>
         </div>
@@ -214,7 +220,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.status}
+              {props.vehicleDetails.status ?? ""}
             </Typography>
           </div>
         </div>
@@ -226,7 +232,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.oddometer}
+              {props.vehicleDetails.odometer ?? ""}
             </Typography>
           </div>
         </div>
@@ -238,7 +244,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.engineHours}
+              {props.vehicleDetails.engHrs ?? ""}
             </Typography>
           </div>
         </div>
@@ -250,7 +256,7 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.backupBattery}
+              {props.vehicleDetails.backupBattery ?? ""}
             </Typography>
           </div>
         </div>
@@ -264,15 +270,15 @@ export default function DeepDiveTabsCard(props) {
           </div>
           <div className={classes.secondDiv} style={{ textAlign: "right" }}>
             <Typography variant="body2" component="p">
-              {props.vehicleDetails.batteryVoltage}
+              {props.vehicleDetails.batteryVoltage ?? ""}
             </Typography>
           </div>
         </div>
         <Typography component="div">
           <Progress
             value={
-              props.vehicleDetails.speed !== undefined
-                ? props.vehicleDetails.speed
+              props.vehicleDetails.speedViolations !== undefined
+                ? props.vehicleDetails.speedViolations
                 : 50
             }
           />
@@ -284,7 +290,7 @@ export default function DeepDiveTabsCard(props) {
               height={100}
               needleHeightRatio={0.7}
               width={150}
-              value={props.vehicleDetails.speed}
+              value={props.vehicleDetails.speedViolations ?? 0}
               maxValue={360}
             />
           </div>
@@ -294,7 +300,7 @@ export default function DeepDiveTabsCard(props) {
               height={100}
               needleHeightRatio={0.7}
               width={150}
-              value={props.vehicleDetails.fuel}
+              value={props.vehicleDetails.fuelLevel ?? 0}
               maxValue={650}
             />
           </div>
