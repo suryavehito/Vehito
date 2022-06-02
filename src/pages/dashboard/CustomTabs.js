@@ -431,6 +431,7 @@ export default function CustomTabs(props) {
               <Divider />
               {reportsList.liveOverView && (
                 <LiveOverView
+                  assetId={props?.assetId}
                   vehicles={vehiclesArray}
                   vehicleStatusPercent={vehicleStatusPercent}
                   vehicleOddometerPercent={vehicleOddometerPercent}

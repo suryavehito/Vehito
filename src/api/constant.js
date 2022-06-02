@@ -16,6 +16,7 @@ export const ASSET_GET_CURRENT_DRIVER_MAP = `/asset/driver/map/currentMap/:userI
 export const ASSET_GET_CURRENT_DATA = `/vts/master/:assetId/getCurrentData`;
 export const ASSET_GET_EVENTS = `/events/data/getEvents/asset/:assetId`;
 export const ASSET_GET_LOCATIONS = `/asset/location/:imei/getLocations/:startTime/:endTime`;
+export const GET_LIVE_DATA_ASSET = `/live/data/get/asset/:assetId`;
 
 /** FILE API */
 const FILE_API_BASE_URL = "/fileService";
