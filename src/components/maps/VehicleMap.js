@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import car from "../../assets/images/car.png";
 import { DirectionsService } from "@react-google-maps/api";
 import { DIRECTIONS_RENDERER } from "react-google-maps/lib/constants";
+import { getLocation } from "../../utils/getLocation";
 
 export const VehicleMap = compose(
   withProps({
@@ -38,30 +39,6 @@ export const VehicleMap = compose(
     setSelectedPoint(point);
     setInfoPosition({ lat: point.lat, lng: point.lng });
     setShowInfo(true);
-  };
-
-  const getLocation = async (lat, lng) => {
-    const geocoder = new window.google.maps.Geocoder();
-    const request = { latLng: { lat: Number(lat), lng: Number(lng) } };
-    const { results } = await geocoder.geocode(request);
-    let returnValue = "";
-    if (results && results[0]) {
-      let adrs_comp = results[0].address_components;
-      let loc_name;
-      let area_name;
-      for (let i = 0; i < adrs_comp.length; i++) {
-        if (adrs_comp[i].types[0] === "locality") {
-          loc_name = adrs_comp[i].long_name;
-        }
-        if (adrs_comp[i].types[0] === "administrative_area_level_1") {
-          area_name = adrs_comp[i].long_name;
-        }
-      }
-      returnValue = `${loc_name}, ${area_name}`;
-    } else {
-      returnValue = "";
-    }
-    return returnValue;
   };
 
   const getRoute = () => {

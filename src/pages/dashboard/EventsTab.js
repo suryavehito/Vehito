@@ -143,12 +143,12 @@ function EventsTab(props) {
           <div className="progress-bars-div">
             <div className="progress-bars-title">
               <Typography style={{ fontWeight: "bold" }} variant="body1">
-                Most Common Events
+                Total Events
               </Typography>
             </div>
             <div className="events-count">
               <Typography style={{ fontWeight: "bold" }} variant="body1">
-                336
+                {rows?.length ?? 0}
               </Typography>
             </div>
           </div>

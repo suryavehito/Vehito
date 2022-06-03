@@ -4,7 +4,6 @@ import { DataGrid } from "@material-ui/data-grid";
 
 const columns = [
   { field: "eventName", headerName: "Event Name", width: 170 },
-  { field: "eventCode", headerName: "Event Code", width: 170 },
   { field: "value", headerName: "Value", width: 175 },
 ];
 
@@ -25,7 +24,6 @@ export default function EventsDataTable({ eventDetails }) {
           {
             id: `${event?.dateTime}_${index}_${i}`,
             eventName: item?.eventName,
-            eventCode: item?.eventCode,
             value: item?.value,
           },
         ])

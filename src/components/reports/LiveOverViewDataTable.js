@@ -72,10 +72,11 @@ export default function LiveOverViewDataTable({ data }) {
     );
   };
 
-  console.log(rows);
-
   return (
     <div style={{ height: 400, width: "100%" }}>
+      <Typography variant="h6" gutterBottom>
+        Fault Codes
+      </Typography>
       <DataGrid
         rows={rows.filter((item) => item?.code !== null)}
         columns={columns}

@@ -139,7 +139,6 @@
   background-color: white;
 }
 
-
 .sudden-acceleration-and-harsh-braking-details-divs {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -170,9 +169,8 @@
   padding-bottom: 0.25rem;
 }
 
-
 .sudden-acceleration-and-harsh-braking-details-div {
-  flex:1;
+  flex: 1;
   height: 10rem;
   display: flex;
   justify-content: center;

@@ -125,15 +125,14 @@ const DeepDive = (props) => {
   }, 60000);
 
   const getLocation = (loc) => {
-    setWayPoints([]);
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode(
       {
         address: loc,
       },
       function (results) {
-        setWayPoints([
-          ...waypoints,
+        setWayPoints((state) => [
+          ...state,
           {
             latitude: results[0].geometry.location.lat(),
             longitude: results[0].geometry.location.lng(),
@@ -144,6 +143,7 @@ const DeepDive = (props) => {
   };
 
   const tripClickHandler = (tripId) => {
+    setWayPoints([]);
     const tripDetails = getTripDetailByUsingTripId(tripId);
     tripDetails.then((res) => {
       getLocation(res?.startLocation);

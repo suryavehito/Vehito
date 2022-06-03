@@ -413,20 +413,22 @@ export default function CustomTabs(props) {
                 ) : (
                   ""
                 )}
-                <div>
-                  <Button
-                    style={{
-                      textTransform: "capitalize",
-                      backgroundColor: "green",
-                      borderRadius: 0,
-                      height: "2.5rem",
-                      color: "white",
-                      marginRight: "0.25rem",
-                    }}
-                  >
-                    Execute
-                  </Button>
-                </div>
+                {!reportsList.liveOverView && (
+                  <div>
+                    <Button
+                      style={{
+                        textTransform: "capitalize",
+                        backgroundColor: "green",
+                        borderRadius: 0,
+                        height: "2.5rem",
+                        color: "white",
+                        marginRight: "0.25rem",
+                      }}
+                    >
+                      Execute
+                    </Button>
+                  </div>
+                )}
               </div>
               <Divider />
               {reportsList.liveOverView && (
