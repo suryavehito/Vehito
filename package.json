@@ -33,6 +33,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
     "react-spring": "^8.0.27",
+    "styled-components": "^5.3.5",
     "use-file-picker": "^1.4.2",
     "web-vitals": "^1.0.1"
   },

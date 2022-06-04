@@ -1,5 +1,8 @@
+import { Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { withGoogleMap, GoogleMap, Polyline, Marker } from "react-google-maps";
+import InfoWindow from "react-google-maps/lib/components/InfoWindow";
+import { getLocation } from "../../utils/getLocation";
 
 const Map = (props) => {
   const [waypoints, setWayPoints] = useState(
@@ -11,6 +14,25 @@ const Map = (props) => {
     })
   );
 
+  const [location, setLocation] = useState("");
+  const [showInfo, setShowInfo] = useState(false);
+  const [selectedPoint, setSelectedPoint] = useState();
+  const [infoPosition, setInfoPosition] = useState();
+  const [index, setIndex] = useState(-1);
+
+  const onMarkerClick = (lat, lng, i) => {
+    setSelectedPoint(null);
+    getLocation(lat, lng).then((res) => setLocation(res));
+    setInfoPosition({ lat: lat, lng: lng });
+    setShowInfo(true);
+    setIndex(i);
+  };
+
+  const closeInfoWindow = () => {
+    setShowInfo(false);
+    setInfoPosition("");
+  };
+
   return waypoints.length >= 2 ? (
     <GoogleMap
       zoom={14}
@@ -21,6 +43,7 @@ const Map = (props) => {
           <Polyline path={waypoints} options={{ strokeColor: "#FF0000 " }} />
           {waypoints.map((waypoint, i) => (
             <Marker
+              onClick={() => onMarkerClick(waypoint.lat, waypoint.lng, i)}
               key={`${waypoint?.lat}_${waypoint?.lng}_${i}`}
               icon={{
                 url:
@@ -34,6 +57,18 @@ const Map = (props) => {
             />
           ))}
         </>
+      )}
+      {showInfo && (
+        <InfoWindow onCloseClick={closeInfoWindow} position={infoPosition}>
+          <div>
+            {index !== -1 && props?.waypoints[index]?.signalStrength && (
+              <Typography variant="body2">
+                Signal Strength: {props?.waypoints[index]?.signalStrength}
+              </Typography>
+            )}
+            <Typography variant="body2">Location: {location}</Typography>
+          </div>
+        </InfoWindow>
       )}
     </GoogleMap>
   ) : (

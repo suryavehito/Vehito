@@ -1,50 +1,28 @@
-import * as React from "react";
-import { DataGrid } from "@material-ui/data-grid";
-import { Typography } from "@material-ui/core";
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import styled from "styled-components";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  Paper,
+  TableCell,
+} from "@material-ui/core";
 
-const columns = [
-  { field: "code", headerName: "Code", width: 130 },
-  { field: "description", headerName: "Description", width: 130 },
-  { field: "make", headerName: "Make", width: 150 },
-  // {
-  //   field: "status",
-  //   headerName: "Status",
-  //   width: 130,
-  //   renderCell: (params) => (
-  //     <Typography
-  //       style={{
-  //         borderLeft:
-  //           params.value === "Running"
-  //             ? "5px solid green"
-  //             : params.value === "Stopped"
-  //             ? "5px solid red"
-  //             : "5px solid orange",
-  //         paddingLeft: "15px",
-  //         width: "100%",
-  //         height: "100%",
-  //         display: "flex",
-  //         alignItems: "center",
-  //         position: "relative",
-  //         left: "-16px",
-  //       }}
-  //     >
-  //       {params.value}
-  //     </Typography>
-  //   ),
-  // },
-  { field: "relatedParts", headerName: "Related Parts", width: 175 },
-  { field: "category", headerName: "Category", width: 175 },
-  { field: "symptoms", headerName: "Symptoms", width: 175 },
-  { field: "fixes", headerName: "Fixes", width: 175 },
-  { field: "causes", headerName: "Causes", width: 175 },
-];
+const useStyles = makeStyles({
+  paper: {
+    width: "150vw",
+  },
+});
 
-const assetModel = ["Maruti Swift", "Tata Indica", "Alto", "Honda"];
-const assetType = ["Car", "Truck", "Jeep", "Van"];
-const timeInStatus = [20.1, 10.4, 30.6, 9.9, 11];
-const fuelCapacity = [100, 130, 99, 46, 250];
+const StyledTableCell = styled(TableCell)(({ theme }) => ({}));
 
-export default function LiveOverViewDataTable({ data }) {
+const StyledTableRow = styled(TableRow)(({ theme }) => ({}));
+
+export default function FaultyCodeTable({ data }) {
+  const classes = useStyles();
+
   const [rows, setRows] = React.useState([]);
 
   React.useEffect(() => {
@@ -62,27 +40,99 @@ export default function LiveOverViewDataTable({ data }) {
           code: obd.code,
           description: obd.description,
           make: obd.make,
-          relatedParts: obd.relatedParts,
+          relatedParts:
+            obd.relatedParts === "NULL" || obd.relatedParts === "NULL "
+              ? "Not Available"
+              : obd.relatedParts,
           category: obd.category,
-          symptoms: obd.symptoms,
-          fixes: obd.fixes,
-          causes: obd.causes,
+          symptoms:
+            obd.symptoms === "NULL" || obd.symptoms === "NULL "
+              ? "Not Available"
+              : obd.symptoms,
+          fixes:
+            obd.fixes === "NULL" || obd.fixes === "NULL "
+              ? "Not Available"
+              : obd.fixes,
+          causes:
+            obd.causes === "NULL" || obd.causes === "NULL "
+              ? "Not Available"
+              : obd.causes,
         },
       ])
     );
   };
 
+  const formattedSymptoms = rows
+    .filter((item) => item?.code !== null)
+    .map((row) => row.symptoms.split(":"));
+  const formattedCauses = rows
+    .filter((item) => item?.code !== null)
+    .map((row) => row.causes.split(":"));
+  const formattedFixes = rows
+    .filter((item) => item?.code !== null)
+    .map((row) => row.fixes.split(":"));
+  const formattedRelatedParts = rows
+    .filter((item) => item?.code !== null)
+    .map((row) => row.relatedParts.split(":"));
+
   return (
-    <div style={{ height: 400, width: "100%" }}>
-      <Typography variant="h6" gutterBottom>
-        Fault Codes
-      </Typography>
-      <DataGrid
-        rows={rows.filter((item) => item?.code !== null)}
-        columns={columns}
-        hideFooter={true}
-        hideFooterPagination={true}
-      />
-    </div>
+    <Paper className={classes.paper}>
+      <Table stickyHeader className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell align="left">Code</StyledTableCell>
+            <StyledTableCell align="left">Description</StyledTableCell>
+            <StyledTableCell align="left">Make</StyledTableCell>
+            <StyledTableCell align="left">Related Parts</StyledTableCell>
+            <StyledTableCell align="left">Category</StyledTableCell>
+            <StyledTableCell align="left">Symptoms</StyledTableCell>
+            <StyledTableCell align="left">Fixes</StyledTableCell>
+            <StyledTableCell align="left">Causes</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows
+            .filter((item) => item?.code !== null)
+            .map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell align="left">{row.code}</StyledTableCell>
+                <StyledTableCell align="left">
+                  {row.description}
+                </StyledTableCell>
+                <StyledTableCell align="left">{row.make}</StyledTableCell>
+                <StyledTableCell align="left">
+                  <ul>
+                    {formattedRelatedParts[index].map((content) => (
+                      <li key={content}>{content}</li>
+                    ))}
+                  </ul>
+                </StyledTableCell>
+                <StyledTableCell align="left">{row.category}</StyledTableCell>
+                <StyledTableCell align="left">
+                  <ul>
+                    {formattedSymptoms[index].map((content) => (
+                      <li key={content}>{content}</li>
+                    ))}
+                  </ul>
+                </StyledTableCell>
+                <StyledTableCell align="left">
+                  <ul>
+                    {formattedFixes[index].map((content) => (
+                      <li key={content}>{content}</li>
+                    ))}
+                  </ul>
+                </StyledTableCell>
+                <StyledTableCell align="left">
+                  <ul>
+                    {formattedCauses[index].map((content) => (
+                      <li key={content}>{content}</li>
+                    ))}
+                  </ul>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </Paper>
   );
 }

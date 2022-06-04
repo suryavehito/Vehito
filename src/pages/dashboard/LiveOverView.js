@@ -85,13 +85,13 @@ function LiveOverView(props) {
               <div className={classes.labelAndValue}>
                 <div className={classes.label}>Report Time</div>
                 <div className={classes.value}>
-                  {new Date(assetDetails?.dateTime).toLocaleString() ?? ""}
+                  {new Date(assetDetails?.dateTime * 1000).toUTCString()}
                 </div>
               </div>
             </Grid>
             <Grid item lg={4}>
               <div className={classes.labelAndValue}>
-                <div className={classes.label}>Garage Name</div>
+                {/* <div className={classes.label}>Garage Name</div> */}
                 <div className={classes.value}></div>
               </div>
             </Grid>
@@ -99,7 +99,7 @@ function LiveOverView(props) {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <div className={classes.summary}>Car Maintainance</div>
+          <div className={classes.summary}>Engine Check</div>
           <Grid style={{ margin: "1rem" }} container>
             <Grid item lg={4}>
               <div className={classes.labelAndValue}>
