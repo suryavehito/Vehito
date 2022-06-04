@@ -26,7 +26,7 @@ const Map = (props) => {
                 url:
                   i === waypoints?.length - 1
                     ? "https://images.vexels.com/media/users/3/154573/isolated/preview/bd08e000a449288c914d851cb9dae110-hatchback-car-top-view-silhouette-by-vexels.png"
-                    : "https://o.remove.bg/downloads/8dd7b982-b7e3-45a3-befe-f6c515bc83e2/503-5030174_now-available-in-vector-location-pin-png-transparent-removebg-preview.png",
+                    : "https://upload.wikimedia.org/wikipedia/commons/d/d1/Google_Maps_pin.svg",
                 scaledSize: new window.google.maps.Size(20, 20),
                 anchor: { x: 10, y: 10 },
               }}

@@ -2,7 +2,6 @@ export const getLocation = async (lat, lng) => {
   const geocoder = new window.google.maps.Geocoder();
   const request = { latLng: { lat: Number(lat), lng: Number(lng) } };
   const { results } = await geocoder.geocode(request);
-  console.log(results);
   let returnValue = "";
   if (results && results[0]) {
     let adrs_comp = results[0].address_components;
