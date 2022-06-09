@@ -48,6 +48,7 @@ import {
   getCurrentData,
   getLocations,
 } from "../../api/assets.api";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   mapGrid: {
@@ -187,8 +188,14 @@ const Dashboard = () => {
       });
   };
 
+  const history = useHistory();
+
   useEffect(() => {
-    getVehicleDetails();
+    if (!sessionStorage.getItem("issuedToken")) {
+      history.push("/");
+    } else {
+      getVehicleDetails();
+    }
   }, []);
 
   const getReverseGeocodingData = (lat, lng) => {

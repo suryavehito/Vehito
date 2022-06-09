@@ -28,16 +28,35 @@ function App() {
           component={() => <Asset tab={0} new={true} />}
         />
         <Route exact path="/vehicle/myassets" component={MyAssets} />
-        <Route exact path="/vehicle/myassets/:vehicleId" component={() => <Asset />} />
+        <Route
+          exact
+          path="/vehicle/myassets/:vehicleId"
+          component={() => <Asset />}
+        />
         <Route exact path="/vehicle/dashboard" component={Dashboard} />
+        <Route exact path="/vehicle/dashboard/mapview" component={Dashboard} />
+        <Route exact path="/vehicle/dashboard/live" component={Dashboard} />
+        <Route exact path="/vehicle/dashboard/events" component={Dashboard} />
         <Route exact path="/view/driver/details" component={DriverDetails} />
         <Route exact path="/vehicle/mydrivers" component={MyDrivers} />
-        <Route exact path="/driver/mydrivers/new" component={() => <Driver editable={true} new={true} />} />
-        <Route exact path="/driver/mydrivers/:driverId" component={() => <Driver editable={false} />} />
+        <Route
+          exact
+          path="/driver/mydrivers/new"
+          component={() => <Driver editable={true} new={true} />}
+        />
+        <Route
+          exact
+          path="/driver/mydrivers/:driverId"
+          component={() => <Driver editable={false} />}
+        />
 
         <Route exact path="/trips" component={Trips} />
         <Route exact path="/trips/new" component={() => <Trip new={true} />} />
-        <Route exact path="/trips/:tripId" component={() => <Trip new={false}/>} />
+        <Route
+          exact
+          path="/trips/:tripId"
+          component={() => <Trip new={false} />}
+        />
 
         <Route
           exact

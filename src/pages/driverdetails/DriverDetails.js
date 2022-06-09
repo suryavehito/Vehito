@@ -61,6 +61,9 @@ const styles = (theme) => ({
 class DriverDetails extends Component {
   constructor(props) {
     super(props);
+    if (!sessionStorage.getItem("issuedToken")) {
+      this.props.history.push("/");
+    }
     this.state = {
       page: 0,
       rowsPerPage: 10,

@@ -1,7 +1,9 @@
 import {
-  Avatar, Button, Container,
+  Avatar,
+  Button,
+  Container,
   ThemeProvider,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
@@ -14,7 +16,11 @@ import EditIcon from "@material-ui/icons/Edit";
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { addDriver, getDriverDetailById, updateDriver } from "../../api/driver.api";
+import {
+  addDriver,
+  getDriverDetailById,
+  updateDriver,
+} from "../../api/driver.api";
 import Footer from "../../components/footer/Footer";
 import DriverDetailsForm from "../../components/form/DriverDetailsForm";
 import Header from "../../components/header/Header";
@@ -119,10 +125,6 @@ export default function Driver(props) {
 
   let driverId = params.driverId;
 
-  if (!sessionStorage.getItem("isLoggedIn")) {
-    history.push("/");
-  }
-
   const classes = useStyles();
   const [value, setValue] = React.useState(props.tab || 0);
 
@@ -152,12 +154,15 @@ export default function Driver(props) {
     updatedOn: 0,
     addressUrl: "",
     licenseUrl: "",
-    profileUrl: ""
+    profileUrl: "",
   });
 
   const [edit, setEdit] = React.useState(props.editable || false);
 
   React.useEffect(() => {
+    if (!sessionStorage.getItem("issuedToken")) {
+      history.push("/");
+    }
     if (driverId && !isNew) {
       const response = getDriverDetailById(driverId);
       response.then(setDriverData);
@@ -176,17 +181,15 @@ export default function Driver(props) {
         response.then(setDriverData);
         setEdit(false);
       });
-    }
-    else {
+    } else {
       const addAssetResponse = addDriver(driverData);
       addAssetResponse.then((addAstRes) => {
-
         const response = getDriverDetailById(addAstRes.id);
         response.then(setDriverData);
         setEdit(false);
       });
     }
-    if(isNew) history.push("/vehicle/mydrivers");
+    if (isNew) history.push("/vehicle/mydrivers");
   };
 
   const handleImageChange = (event) => {
@@ -201,7 +204,6 @@ export default function Driver(props) {
   const toggleEditMode = () => {
     setEdit(!edit);
   };
-
 
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
@@ -281,23 +283,26 @@ export default function Driver(props) {
                         color="primary"
                         component="span"
                       >
-                        {driverData.driverImage === "" || edit ? "Upload" : "Edit"}
+                        {driverData.driverImage === "" || edit
+                          ? "Upload"
+                          : "Edit"}
                       </Button>
                     </label>
-
                   </Paper>
                 </Grid>
                 <Grid item xs={12} sm={8} lg={6} md={6}>
                   <Paper className={classes.paper + " driverDetailsInfoPaper"}>
                     <Typography variant="h6">Driver Details</Typography>
-                    {driverData && <DriverDetailsForm
-                      tab={props.tab}
-                      styles={classes.button}
-                      isEditable={edit}
-                      onChange={onChangeHandler}
-                      onDateChange={onDateChangeHandler}
-                      state={driverData}
-                    />}
+                    {driverData && (
+                      <DriverDetailsForm
+                        tab={props.tab}
+                        styles={classes.button}
+                        isEditable={edit}
+                        onChange={onChangeHandler}
+                        onDateChange={onDateChangeHandler}
+                        state={driverData}
+                      />
+                    )}
                   </Paper>
                 </Grid>
               </Grid>
@@ -316,29 +321,7 @@ export default function Driver(props) {
             style={{ marginTop: "1rem", textAlign: "center" }}
           >
             <Grid item xs={12} sm={12} style={{ marginTop: "1rem" }}>
-              {isNew ? 
-                 <>
-                 <Button
-                   variant="contained"
-                   size="large"
-                   className={classes.button + " editBtn"}
-                   startIcon={<EditIcon />}
-                   style={{ backgroundColor: "lightblue" }}
-                   onClick={saveBtnOnClickHandler}
-                 >
-                   Save
-                 </Button>
-                 <Button
-                   variant="contained"
-                   size="large"
-                   color="secondary"
-                   className={classes.button}
-                   onClick={toggleEditMode}
-                 >
-                   Cancel
-                 </Button>
-               </> : 
-                edit ?
+              {isNew ? (
                 <>
                   <Button
                     variant="contained"
@@ -359,7 +342,30 @@ export default function Driver(props) {
                   >
                     Cancel
                   </Button>
-                </> :
+                </>
+              ) : edit ? (
+                <>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    className={classes.button + " editBtn"}
+                    startIcon={<EditIcon />}
+                    style={{ backgroundColor: "lightblue" }}
+                    onClick={saveBtnOnClickHandler}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={toggleEditMode}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
                 <Button
                   variant="contained"
                   size="large"
@@ -369,8 +375,7 @@ export default function Driver(props) {
                 >
                   Edit
                 </Button>
-              }
-
+              )}
             </Grid>
           </Grid>
         </div>

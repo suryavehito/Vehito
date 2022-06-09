@@ -55,15 +55,19 @@ const MyAssets = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {});
-    getVehicleDetails();
-    noOfColumns();
-    setMounted(true);
-    //when the window is resized calls the noOfColumns method
-    window.addEventListener("resize", noOfColumns);
-    return () => {
-      window.removeEventListener("resize", noOfColumns);
-    };
+    if (!sessionStorage.getItem("issuedToken")) {
+      history.push("/");
+    } else {
+      setTimeout(() => {});
+      getVehicleDetails();
+      noOfColumns();
+      setMounted(true);
+      //when the window is resized calls the noOfColumns method
+      window.addEventListener("resize", noOfColumns);
+      return () => {
+        window.removeEventListener("resize", noOfColumns);
+      };
+    }
   }, []);
 
   const onTagsChange = (event, values) => {

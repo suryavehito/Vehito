@@ -32,6 +32,7 @@ import EngineImmobilizer from "./EngineImmobilzer";
 import TiltAndElevation from "./TiltAndElevation";
 import SuddenAccelerationAndHarshBraking from "./SuddenAccelerationAndHarshBraking";
 import { getLocations } from "../../api/assets.api";
+import { Link, useHistory } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -92,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CustomTabs(props) {
+  const history = useHistory();
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [reportsList, setReportsList] = React.useState({
@@ -132,6 +134,26 @@ export default function CustomTabs(props) {
   const [routes, setRoutes] = React.useState([]);
   const [showRoutes, setShowRoutes] = React.useState(false);
   const [routesTimeGap, setRouteTimeGap] = React.useState("lasthour"); // in minutes
+
+  useEffect(() => {
+    if (
+      (history.location.pathname === "/vehicle/dashboard/mapview" ||
+        history.location.pathname === "/vehicle/dashboard") &&
+      value !== 0
+    ) {
+      setValue(0);
+    } else if (
+      history.location.pathname === "/vehicle/dashboard/live" &&
+      value !== 1
+    ) {
+      setValue(1);
+    } else if (
+      history.location.pathname === "/vehicle/dashboard/events" &&
+      value !== 2
+    ) {
+      setValue(2);
+    }
+  }, [value]);
 
   useEffect(() => {
     if (props.vehicleDetails && props.vehicleDetails.imei) {
@@ -315,6 +337,9 @@ export default function CustomTabs(props) {
           aria-label="vehicle details tabs"
         >
           <Tab
+            disableRipple
+            component={Link}
+            to={"/vehicle/dashboard/mapview"}
             label={
               <div>
                 <FontAwesomeIcon icon={faMapMarkerAlt} /> Map View
@@ -323,6 +348,9 @@ export default function CustomTabs(props) {
             {...a11yProps(0)}
           />
           <Tab
+            disableRipple
+            component={Link}
+            to={"/vehicle/dashboard/live"}
             label={
               <div>
                 <FontAwesomeIcon icon={faStickyNote} /> Live Data
@@ -331,6 +359,9 @@ export default function CustomTabs(props) {
             {...a11yProps(1)}
           />
           <Tab
+            disableRipple
+            component={Link}
+            to={"/vehicle/dashboard/events"}
             label={
               <div>
                 <FontAwesomeIcon icon={faExclamationTriangle} /> Events

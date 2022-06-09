@@ -29,13 +29,13 @@ const styles = (theme) => ({
     marginRight: "auto",
     paddingBottom: 15,
     cursor: "pointer",
-    width: "100%"
+    width: "100%",
   },
   actionsContainer: {
     display: "flex",
     alignItems: "center",
     padding: "0px 20px",
-    marginTop: "1rem"
+    marginTop: "1rem",
   },
   placeholderImage: {
     width: theme.spacing(17),
@@ -46,17 +46,16 @@ const styles = (theme) => ({
     },
     display: "flex",
     justifyContent: "center",
-    color: "rgba(0, 0, 0, 0.54)"
+    color: "rgba(0, 0, 0, 0.54)",
   },
 });
 
 const MyDrivers = (props) => {
-
   const [driverDetails, setDriverDetails] = useState([]);
 
   const [cards, setCards] = useState(null);
 
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState([]);
 
   const [mounted, setMounted] = useState(false);
 
@@ -65,14 +64,18 @@ const MyDrivers = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => { })
-    getDriverDetails();
-    noOfColumns();
-    setMounted(true)
-    //when the window is resized calls the noOfColumns method
-    window.addEventListener("resize", noOfColumns);
-    return () => {
-      window.removeEventListener("resize", noOfColumns);
+    if (!sessionStorage.getItem("issuedToken")) {
+      history.push("/");
+    } else {
+      setTimeout(() => {});
+      getDriverDetails();
+      noOfColumns();
+      setMounted(true);
+      //when the window is resized calls the noOfColumns method
+      window.addEventListener("resize", noOfColumns);
+      return () => {
+        window.removeEventListener("resize", noOfColumns);
+      };
     }
   }, []);
 
@@ -110,7 +113,7 @@ const MyDrivers = (props) => {
 
   const addClick = () => {
     history.push("/driver/mydrivers/new");
-  }
+  };
 
   //method updates the no columns according to the window size
   const noOfColumns = () => {
@@ -125,7 +128,7 @@ const MyDrivers = (props) => {
     }
 
     if (window.innerWidth >= 1001 && window.innerWidth <= 1270) {
-      setCards(3)
+      setCards(3);
       return;
     }
 
@@ -134,7 +137,7 @@ const MyDrivers = (props) => {
       return;
     }
     if (window.innerWidth >= 1530) {
-      setCards(5)
+      setCards(5);
       return;
     }
   };
@@ -142,9 +145,11 @@ const MyDrivers = (props) => {
   //fetches the restaurants from backend
   const getDriverDetails = () => {
     const allDrivers = getAllDriver();
-    allDrivers.then((response) => {
+    allDrivers
+      .then((response) => {
         setDriverDetails(response || []);
-      }).catch(() => {   
+      })
+      .catch(() => {
         setDriverDetails([]);
       });
   };
@@ -165,7 +170,7 @@ const MyDrivers = (props) => {
           lg={4}
           xs={12}
           style={{
-            margin: "auto"
+            margin: "auto",
           }}
         >
           <input
@@ -181,7 +186,7 @@ const MyDrivers = (props) => {
           item
           xs={"auto"}
           style={{
-            marginRight: "1rem"
+            marginRight: "1rem",
           }}
         >
           <Button
@@ -193,7 +198,7 @@ const MyDrivers = (props) => {
             Add
           </Button>
         </Grid>
-      </Grid >
+      </Grid>
 
       <Container style={{ minHeight: "77vh" }}>
         {driverDetails.length === 0 ? (
@@ -204,17 +209,21 @@ const MyDrivers = (props) => {
               <GridListTile key={"driver" + driverDetails.id}>
                 <Card className={classes.driverDetailsCard}>
                   <CardActionArea>
-                    {driverDetails.driverImage ? <CardMedia
-                      component="img"
-                      height={160}
-                      image={driverDetails.driverImage}
-                      title={driverDetails.fullName}
-                    /> : <div className="avatarDiv">
-                      <Avatar
-                        alt="driver_image"
-                        className={classes.placeholderImage}
+                    {driverDetails.driverImage ? (
+                      <CardMedia
+                        component="img"
+                        height={160}
+                        image={driverDetails.driverImage}
+                        title={driverDetails.fullName}
                       />
-                    </div>}
+                    ) : (
+                      <div className="avatarDiv">
+                        <Avatar
+                          alt="driver_image"
+                          className={classes.placeholderImage}
+                        />
+                      </div>
+                    )}
                     <CardContent>
                       <div className="driver-title-div">
                         <Typography gutterBottom variant="h5" component="h2">
@@ -235,7 +244,9 @@ const MyDrivers = (props) => {
                     <CardActions>
                       <Button
                         component="div"
-                        onClick={() => driverDetailsClick(driverDetails.driverId)}
+                        onClick={() =>
+                          driverDetailsClick(driverDetails.driverId)
+                        }
                         size="small"
                         color="primary"
                       >
@@ -250,10 +261,10 @@ const MyDrivers = (props) => {
         )}
       </Container>
       <Footer />
-    </div >
+    </div>
   ) : (
     ""
   );
-}
+};
 
 export default withStyles(styles)(MyDrivers);

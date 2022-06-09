@@ -1,7 +1,9 @@
 import {
-  Avatar, Button, Container,
+  Avatar,
+  Button,
+  Container,
   ThemeProvider,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
@@ -14,13 +16,25 @@ import Paper from "@material-ui/core/Paper";
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import DriveEtaIcon from '@material-ui/icons/DriveEta';
+import DriveEtaIcon from "@material-ui/icons/DriveEta";
 import EditIcon from "@material-ui/icons/Edit";
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { addAsset, assignDriverToAsset, getAssetDetailById, getCurrentDriverMap, unAssignDriverFromAsset, updateAsset, updateDriverToAsset, uploadAssetImage } from "../../api/assets.api";
-import { getAllUnassignedDriver, getDriverDetailById } from "../../api/driver.api";
+import {
+  addAsset,
+  assignDriverToAsset,
+  getAssetDetailById,
+  getCurrentDriverMap,
+  unAssignDriverFromAsset,
+  updateAsset,
+  updateDriverToAsset,
+  uploadAssetImage,
+} from "../../api/assets.api";
+import {
+  getAllUnassignedDriver,
+  getDriverDetailById,
+} from "../../api/driver.api";
 import Footer from "../../components/footer/Footer";
 import DriverDetailsForm from "../../components/form/DriverDetailsForm";
 import OtherNotesForm from "../../components/form/OtherNotesForm";
@@ -130,9 +144,11 @@ export default function Asset(props) {
 
   let vehicleId = params.vehicleId;
 
-  if (!sessionStorage.getItem("isLoggedIn")) {
-    history.push("/");
-  }
+  useEffect(() => {
+    if (!sessionStorage.getItem("issuedToken")) {
+      history.push("/");
+    }
+  }, []);
 
   const lastStep = 1;
   const classes = useStyles();
@@ -163,7 +179,7 @@ export default function Asset(props) {
     tankCapacity: 0,
     yom: "",
     createdOn: 0,
-    modifiedOn: 0
+    modifiedOn: 0,
   });
 
   const [vehicleImages, setVehicleImages] = React.useState([]);
@@ -187,40 +203,42 @@ export default function Asset(props) {
       tmpVehicleImages.push(vehicleDataResponse.imgUrl3);
     }
     setVehicleImages(tmpVehicleImages);
-  }
+  };
 
   const getCurrentDriver = (assetId) => {
     if (assetId) {
       const driverMapResponse = getCurrentDriverMap(assetId);
-      driverMapResponse.then((driverMapResp) => {
-        setSelectedDriver(driverMapResp.driverInfo);
-        setIsDriverSet(true);
-      }).catch((e) => {
-        setSelectedDriver(null);
-      })
+      driverMapResponse
+        .then((driverMapResp) => {
+          setSelectedDriver(driverMapResp.driverInfo);
+          setIsDriverSet(true);
+        })
+        .catch((e) => {
+          setSelectedDriver(null);
+        });
     }
-  }
+  };
 
   React.useEffect(() => {
     if (vehicleId && !isNew) {
       const response = getAssetDetailById(vehicleId);
       response.then(updateVehicleInformation);
       getCurrentDriver(vehicleId);
-
     }
 
     const allDrivers = getAllUnassignedDriver();
-    allDrivers.then((response) => {
-      setDriverList(response);
-    }).catch(() => {
-      setDriverList([]);
-    });
+    allDrivers
+      .then((response) => {
+        setDriverList(response);
+      })
+      .catch(() => {
+        setDriverList([]);
+      });
   }, []);
 
   const [edit, setEdit] = React.useState(isNew);
 
   const [editAssignDriver, setEditAssignDriver] = React.useState(isNew);
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -230,17 +248,26 @@ export default function Asset(props) {
     if (vehicleImages.length < 3) {
       const file = event.target.files[0];
       const formData = new FormData();
-      formData.append('file', file);
-      console.log('file name ' + file.name);
-      const uploadResponse = uploadAssetImage(formData, vehicleData.regNum, file.name)
+      formData.append("file", file);
+      console.log("file name " + file.name);
+      const uploadResponse = uploadAssetImage(
+        formData,
+        vehicleData.regNum,
+        file.name
+      );
       uploadResponse.then((response) => {
-        setVehicleImages([...vehicleImages, 'https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/1013938.jpg']);
+        setVehicleImages([
+          ...vehicleImages,
+          "https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/1013938.jpg",
+        ]);
       });
       let temp = Array.from(vehicleImages);
-      temp.push('https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/1013938.jpg');
+      temp.push(
+        "https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/1013938.jpg"
+      );
       setVehicleImages(temp);
     }
-    console.log('vehicle len' + vehicleImages.length);
+    console.log("vehicle len" + vehicleImages.length);
   };
 
   const toggleEditMode = () => {
@@ -254,24 +281,26 @@ export default function Asset(props) {
   const saveAssignDriver = () => {
     if (selectedDriver) {
       if (isDriverSet) {
-        updateDriverToAsset(vehicleData.assetId, selectedDriver.driverId).then((response) => {
-          setEditAssignDriver(false);
-        });
+        updateDriverToAsset(vehicleData.assetId, selectedDriver.driverId).then(
+          (response) => {
+            setEditAssignDriver(false);
+          }
+        );
+      } else {
+        assignDriverToAsset(vehicleData.assetId, selectedDriver.driverId).then(
+          (response) => {
+            setEditAssignDriver(false);
+          }
+        );
       }
-      else {
-        assignDriverToAsset(vehicleData.assetId, selectedDriver.driverId).then((response) => {
-          setEditAssignDriver(false);
-        });
-      }
-    }
-    else {
+    } else {
       if (isDriverSet) {
         unAssignDriverFromAsset(vehicleData.assetId).then((response) => {
           setEditAssignDriver(false);
         });
       }
     }
-  }
+  };
 
   const saveBtnOnClickHandler = () => {
     if (vehicleData.assetId) {
@@ -279,19 +308,18 @@ export default function Asset(props) {
         ...vehicleData,
         imgUrl1: vehicleImages[0] || "",
         imgUrl2: vehicleImages[1] || "",
-        imgUrl3: vehicleImages[2] || ""
+        imgUrl3: vehicleImages[2] || "",
       });
       updateAssetResponse.then((response) => {
         setEdit(false);
         updateVehicleInformation(response);
       });
-    }
-    else {
+    } else {
       const addAssetResponse = addAsset({
         ...vehicleData,
         imgUrl1: vehicleImages[0] || "",
         imgUrl2: vehicleImages[1] || "",
-        imgUrl3: vehicleImages[2] || ""
+        imgUrl3: vehicleImages[2] || "",
       });
       addAssetResponse.then((response) => {
         setEdit(false);
@@ -303,14 +331,14 @@ export default function Asset(props) {
   const onChangeHandler = (event) => {
     setVehicleData({ ...vehicleData, [event.target.name]: event.target.value });
     if (value === 0) {
-      generalInfoNextClick() ? setGINextBtn(true) : setGINextBtn(false)
+      generalInfoNextClick() ? setGINextBtn(true) : setGINextBtn(false);
     }
   };
 
   const onDriverChange = (event) => {
     const { value } = event.target;
     if (value) {
-      if (value !== 'unassign') {
+      if (value !== "unassign") {
         const response = getDriverDetailById(value);
         response.then(setSelectedDriver);
       } else {
@@ -319,8 +347,7 @@ export default function Asset(props) {
     } else {
       setSelectedDriver(null);
     }
-
-  }
+  };
 
   const avatarOnClickHandler = () => {
     setVehicleData({ ...vehicleData, avatarModal: true });
@@ -338,9 +365,18 @@ export default function Asset(props) {
   };
 
   const generalInfoNextClick = () => {
-    if (vehicleData.regNum && vehicleData.make && vehicleData.model && vehicleData.engineNo && vehicleData.odoStart &&
-      vehicleData.imei && vehicleData.insuranceComp && vehicleData.insuranceExp &&
-      vehicleData.transmission && vehicleData.assetType) {
+    if (
+      vehicleData.regNum &&
+      vehicleData.make &&
+      vehicleData.model &&
+      vehicleData.engineNo &&
+      vehicleData.odoStart &&
+      vehicleData.imei &&
+      vehicleData.insuranceComp &&
+      vehicleData.insuranceExp &&
+      vehicleData.transmission &&
+      vehicleData.assetType
+    ) {
       return true;
     } else return false;
   };
@@ -357,11 +393,10 @@ export default function Asset(props) {
     console.log("remove vehicle " + cur + vehicleImages.length);
     if (vehicleImages.length === 1) setVehicleImages([]);
     else {
-
-      let temp = vehicleImages.splice(cur, 1)
+      let temp = vehicleImages.splice(cur, 1);
       setVehicleImages(temp);
     }
-  }
+  };
 
   return (
     <Fragment>
@@ -380,10 +415,30 @@ export default function Asset(props) {
                 aria-label="scrollable force tabs example"
               >
                 <Tab label="General Information" {...a11yProps(0)} />
-                <Tab label="Vehicle Images" disabled={!vehicleData.regNum} {...a11yProps(1)} />
-                <Tab label="Assign Driver" disabled={!vehicleData.assetId} {...a11yProps(2)} />
-                {vehicleId && <Tab label="Live Location" disabled={!vehicleData.assetId} {...a11yProps(3)} />}
-                {vehicleId && <Tab label="Live Fault Codes" disabled={!vehicleData.assetId} {...a11yProps(4)} />}
+                <Tab
+                  label="Vehicle Images"
+                  disabled={!vehicleData.regNum}
+                  {...a11yProps(1)}
+                />
+                <Tab
+                  label="Assign Driver"
+                  disabled={!vehicleData.assetId}
+                  {...a11yProps(2)}
+                />
+                {vehicleId && (
+                  <Tab
+                    label="Live Location"
+                    disabled={!vehicleData.assetId}
+                    {...a11yProps(3)}
+                  />
+                )}
+                {vehicleId && (
+                  <Tab
+                    label="Live Fault Codes"
+                    disabled={!vehicleData.assetId}
+                    {...a11yProps(4)}
+                  />
+                )}
               </Tabs>
             </AppBar>
           </ThemeProvider>
@@ -469,36 +524,37 @@ export default function Asset(props) {
                 <Typography style={{ textAlign: "left" }} variant="subtitle2">
                   Upload atleast 3 images
                 </Typography>
-                {(vehicleImages.length > 0) ? <GridList
-                  cellHeight={160}
-                  className={classes.gridList}
-                  cols={3}
-                >
-                  {vehicleImages.map((veh, index) => {
-                    return (
-                      <GridListTile>
-                        {edit && <IconButton
-                          onClick={() => removeVehicleImage(index)}
-                          className="removeBtn"
-                          disableRipple={true}
-                          disableFocusRipple={true}
-                          color="inherit"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                        }
-                        <img
-                          name="vehicleImage"
-                          id="vehicleImage"
-                          src={veh}
-                          alt={"vehicle_Image"}
-                        />
-
-                      </GridListTile>
-                    )
-                  })}
-
-                </GridList> :
+                {vehicleImages.length > 0 ? (
+                  <GridList
+                    cellHeight={160}
+                    className={classes.gridList}
+                    cols={3}
+                  >
+                    {vehicleImages.map((veh, index) => {
+                      return (
+                        <GridListTile>
+                          {edit && (
+                            <IconButton
+                              onClick={() => removeVehicleImage(index)}
+                              className="removeBtn"
+                              disableRipple={true}
+                              disableFocusRipple={true}
+                              color="inherit"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                          <img
+                            name="vehicleImage"
+                            id="vehicleImage"
+                            src={veh}
+                            alt={"vehicle_Image"}
+                          />
+                        </GridListTile>
+                      );
+                    })}
+                  </GridList>
+                ) : (
                   <div className="avatarDiv">
                     <DriveEtaIcon
                       onClick={avatarOnClickHandler}
@@ -507,27 +563,35 @@ export default function Asset(props) {
                       className={classes.large}
                     />
                   </div>
-                }
-                {(vehicleImages.length < 3) && <div style={{ textAlign: "center", marginTop: "1rem" }}>
-                  <input
-                    accept="image/*"
-                    className={classes.input}
-                    id="contained-button-file"
-                    type="file"
-                    onChange={handleImageChange}
-                    disabled={vehicleImages.length === 3 || !vehicleData.regNum}
-                  />
-                  {edit && <label htmlFor="contained-button-file">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      component="span"
-                      disabled={vehicleImages.length === 3 || !vehicleData.regNum}
-                    >
-                      Upload
-                    </Button>
-                  </label>}
-                </div>}
+                )}
+                {vehicleImages.length < 3 && (
+                  <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                    <input
+                      accept="image/*"
+                      className={classes.input}
+                      id="contained-button-file"
+                      type="file"
+                      onChange={handleImageChange}
+                      disabled={
+                        vehicleImages.length === 3 || !vehicleData.regNum
+                      }
+                    />
+                    {edit && (
+                      <label htmlFor="contained-button-file">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          component="span"
+                          disabled={
+                            vehicleImages.length === 3 || !vehicleData.regNum
+                          }
+                        >
+                          Upload
+                        </Button>
+                      </label>
+                    )}
+                  </div>
+                )}
               </Paper>
             </Grid>
           </TabPanel>
@@ -538,10 +602,7 @@ export default function Asset(props) {
                   <Paper className={classes.paper + " uploadDriverImagePaper"}>
                     <Typography variant="h6">Driver Image</Typography>
                     <div className="avatarDiv">
-                      <Avatar
-                        alt="driver_image"
-                        className={classes.large}
-                      />
+                      <Avatar alt="driver_image" className={classes.large} />
                     </div>
                   </Paper>
                 </Grid>
@@ -555,53 +616,75 @@ export default function Asset(props) {
                         </label>
                       </div>
                       <div className="col-60">
-                        <select className="select" onChange={onDriverChange} disabled={!editAssignDriver}>
+                        <select
+                          className="select"
+                          onChange={onDriverChange}
+                          disabled={!editAssignDriver}
+                        >
                           <option value="">Select Driver</option>
                           <option value="unassign">None</option>
-                          {driverList.map(driver => <option value={driver.driverId}>{driver.fName} {driver.lName}</option>)}
+                          {driverList.map((driver) => (
+                            <option value={driver.driverId}>
+                              {driver.fName} {driver.lName}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
-                    {selectedDriver && <DriverDetailsForm
-                      tab={props.tab}
-                      styles={classes.button}
-                      state={selectedDriver}
-                    />}
+                    {selectedDriver && (
+                      <DriverDetailsForm
+                        tab={props.tab}
+                        styles={classes.button}
+                        state={selectedDriver}
+                      />
+                    )}
                   </Paper>
                 </Grid>
               </Grid>
-              <Grid item xs={12} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                {vehicleData.assetId && (editAssignDriver ?
-                  <> <Button
-                      variant="contained"
-                      size="large"
-                      className={classes.button + " editBtn"}
-                      startIcon={<EditIcon />}
-                      style={{ backgroundColor: "lightblue" }}
-                      onClick={saveAssignDriver}
-                    >
-                      Save
-                    </Button>
-                     <Button
+              <Grid
+                item
+                xs={12}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {vehicleData.assetId &&
+                  (editAssignDriver ? (
+                    <>
+                      {" "}
+                      <Button
+                        variant="contained"
+                        size="large"
+                        className={classes.button + " editBtn"}
+                        startIcon={<EditIcon />}
+                        style={{ backgroundColor: "lightblue" }}
+                        onClick={saveAssignDriver}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="large"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={toggleEditAssignDriver}
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
                       variant="contained"
                       size="large"
                       color="secondary"
                       className={classes.button}
                       onClick={toggleEditAssignDriver}
                     >
-                      Cancel
+                      Edit
                     </Button>
-                  </> :
-                  <Button
-                    variant="contained"
-                    size="large"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={toggleEditAssignDriver}
-                  >
-                    Edit
-                  </Button>)
-                }
+                  ))}
               </Grid>
               <AvatarModal
                 submitOnClickHandler={submitOnClickHandler}
@@ -611,47 +694,66 @@ export default function Asset(props) {
               />
             </div>
           </TabPanel>
-          {vehicleId && <TabPanel value={value} index={3}>
-            Item Four
-          </TabPanel>}
-          {vehicleId && <TabPanel value={value} index={4}>
-            Item Five
-          </TabPanel>}
-          {value <= lastStep && <Grid item xs={12} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            
-              {edit ?
+          {vehicleId && (
+            <TabPanel value={value} index={3}>
+              Item Four
+            </TabPanel>
+          )}
+          {vehicleId && (
+            <TabPanel value={value} index={4}>
+              Item Five
+            </TabPanel>
+          )}
+          {value <= lastStep && (
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {edit ? (
                 <>
-                  {value < lastStep && <Button
-                    variant="contained"
-                    size="large"
-                    className={classes.button + " editBtn"}
-                    startIcon={<EditIcon />}
-                    style={{ backgroundColor: "lightblue" }}
-                    onClick={() => gotoNext()}
-                  >
-                    Next
-                  </Button>}
-                  {lastStep === value && <Button
-                    variant="contained"
-                    size="large"
-                    className={classes.button + " editBtn"}
-                    startIcon={<EditIcon />}
-                    style={{ backgroundColor: "lightblue" }}
-                    onClick={saveBtnOnClickHandler}
-                    disabled={vehicleImages.length < 3}
-                  >
-                    Save
-                  </Button>}
-                  {vehicleData.assetId && <Button
-                    variant="contained"
-                    size="large"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={toggleEditMode}
-                  >
-                    Cancel
-                  </Button>}
-                </> :
+                  {value < lastStep && (
+                    <Button
+                      variant="contained"
+                      size="large"
+                      className={classes.button + " editBtn"}
+                      startIcon={<EditIcon />}
+                      style={{ backgroundColor: "lightblue" }}
+                      onClick={() => gotoNext()}
+                    >
+                      Next
+                    </Button>
+                  )}
+                  {lastStep === value && (
+                    <Button
+                      variant="contained"
+                      size="large"
+                      className={classes.button + " editBtn"}
+                      startIcon={<EditIcon />}
+                      style={{ backgroundColor: "lightblue" }}
+                      onClick={saveBtnOnClickHandler}
+                      disabled={vehicleImages.length < 3}
+                    >
+                      Save
+                    </Button>
+                  )}
+                  {vehicleData.assetId && (
+                    <Button
+                      variant="contained"
+                      size="large"
+                      color="secondary"
+                      className={classes.button}
+                      onClick={toggleEditMode}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </>
+              ) : (
                 <Button
                   variant="contained"
                   size="large"
@@ -660,9 +762,10 @@ export default function Asset(props) {
                   onClick={toggleEditMode}
                 >
                   Edit
-                </Button>}
-           
-          </Grid>}
+                </Button>
+              )}
+            </Grid>
+          )}
         </div>
       </Container>
       <Footer />

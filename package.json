@@ -21,6 +21,7 @@
     "country-state-city": "^3.0.1",
     "cropperjs": "^1.5.11",
     "http-proxy-middleware": "^0.19.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.3",
     "react": "^16.8.6",
     "react-d3-speedometer": "^1.0.1",
