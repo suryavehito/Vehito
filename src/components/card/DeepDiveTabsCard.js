@@ -18,8 +18,19 @@ import {
   ListItemText,
   Tooltip,
   Divider,
+  Button,
+  CardActionArea,
 } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { CardHeader, CardActions } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
 import Progress from "../progress/Progress";
+import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
+import Popover from "@material-ui/core/Popover";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import ReactSpeedometer from "react-d3-speedometer";
 import Timeline from "@material-ui/lab/Timeline";
 import TimelineItem from "@material-ui/lab/TimelineItem";
@@ -119,6 +130,59 @@ const useStyles = makeStyles((theme) => ({
   dateAndTimeDiv: {
     fontSize: "small",
   },
+  analyseTrip: {
+    textTransform: "none",
+  },
+  analyseTripContainer: {
+    marginBottom: "0.5rem",
+    textAlign: "end",
+    marginRight: "0.5rem",
+  },
+  subTripsContainer: {
+    height: 400,
+    overflow: "scroll",
+  },
+  subTripsTopSection: {
+    display: "flex",
+    padding: "0.5rem",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  subTripCard: {
+    minWidth: 350,
+    margin: "0px 0.5rem",
+    marginBottom: "1rem",
+    boxShadow: "none",
+  },
+  tripTitle: {
+    margin: "0px 0.5rem",
+    fontWeight: "bold",
+  },
+  subTripContent: {
+    display: "flex",
+  },
+  contentDetails: {
+    width: "50%",
+    display: "flex",
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: "bold",
+    width: "50%",
+    display: "flex",
+    alignItems: "center",
+    margin: "0.25rem 0px",
+    color: "dimGray",
+  },
+  value: {
+    fontSize: 12,
+    fontWeight: 400,
+    width: "50%",
+    display: "flex",
+    alignItems: "center",
+    margin: "0.25rem 0px",
+    color: "gray",
+  },
 }));
 
 export default function DeepDiveTabsCard(props) {
@@ -127,6 +191,11 @@ export default function DeepDiveTabsCard(props) {
   const { assetId } = useParams();
   const [trips, setTrips] = React.useState([]);
   const [location, setLocation] = useState("");
+  const [trip, setTrip] = useState(null);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "sub-trips-popover" : undefined;
 
   React.useEffect((trips) => {
     getAllTripAnalyticData(assetId).then((response) => {
@@ -140,6 +209,10 @@ export default function DeepDiveTabsCard(props) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -362,7 +435,12 @@ export default function DeepDiveTabsCard(props) {
           <Grid item lg={12}>
             {trips.map((trip, index) => (
               <List
-                style={{ paddingTop: 0, paddingBottom: 0 }}
+                style={{
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
                 key={trip.tripId}
               >
                 <ListItem
@@ -392,12 +470,15 @@ export default function DeepDiveTabsCard(props) {
                           </Tooltip>
                           <div className={classes.dateAndTimeDiv}>
                             <p style={{ marginTop: "0.35rem" }}>
-                              {new Date(trip.startDate).getDate() +
+                              {new Date(trip.startDate * 1000).getUTCDate() +
                                 "/" +
-                                (new Date(trip.startDate).getMonth() + 1) +
+                                (new Date(trip.startDate * 1000).getUTCMonth() +
+                                  1) +
                                 "/" +
-                                new Date(trip.startDate).getFullYear()}{" "}
-                              {`${trip.totalDistance} Kms`}
+                                new Date(
+                                  trip.startDate * 1000
+                                ).getUTCFullYear()}
+                              {`, Total Km: ${trip.totalDistance}`}
                             </p>
                           </div>
                         </TimelineItem>
@@ -417,12 +498,13 @@ export default function DeepDiveTabsCard(props) {
                           </Tooltip>
                           <div className={classes.dateAndTimeDiv}>
                             <p style={{ marginTop: "0.35rem" }}>
-                              {new Date(trip.endDate).getDate() +
+                              {new Date(trip.endDate * 1000).getUTCDate() +
                                 "/" +
-                                (new Date(trip.endDate).getMonth() + 1) +
+                                (new Date(trip.endDate * 1000).getUTCMonth() +
+                                  1) +
                                 "/" +
-                                new Date(trip.endDate).getFullYear()}{" "}
-                              {`${new Date(
+                                new Date(trip.endDate * 1000).getUTCFullYear()}
+                              {`, Duration: ${new Date(
                                 trip.endDate - trip.startDate
                               ).getHours()} Hrs`}
                             </p>
@@ -432,11 +514,136 @@ export default function DeepDiveTabsCard(props) {
                     </ThemeProvider>
                   </ListItemText>
                 </ListItem>
+                <div className={classes.analyseTripContainer}>
+                  <Button
+                    className={classes.analyseTrip}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={(e) => {
+                      setAnchorEl(e.currentTarget);
+                      setTrip(trip);
+                    }}
+                  >
+                    Analyse Trip
+                  </Button>
+                </div>
                 <Divider />
               </List>
             ))}
           </Grid>
         </Grid>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "center",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "center",
+            horizontal: "left",
+          }}
+          className={classes.subTripsPopOver}
+        >
+          <div className={classes.subTripsContainer}>
+            <div className={classes.subTripsTopSection}>
+              <Typography style={{ color: "green" }} variant="body1">
+                Sub Trips
+              </Typography>
+              <IconButton
+                size="small"
+                onClick={handleClose}
+                aria-label="close-filter"
+              >
+                <CloseIcon />
+              </IconButton>
+            </div>
+            {trip !== null &&
+              trip?.subTripDataList.map((subTrip, i) => (
+                <div key={subTrip?.startLocation}>
+                  <Typography className={classes.tripTitle}>{`Trip ${
+                    i + 1
+                  }`}</Typography>
+                  <Card
+                    key={subTrip?.startTime}
+                    className={classes.subTripCard}
+                  >
+                    <CardActionArea>
+                      <div className={classes.subTripContent}>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>Start Time: </div>
+                          <div className={classes.value}>
+                            {new Date(subTrip.startTime * 1000).getUTCDate() +
+                              "/" +
+                              (new Date(
+                                subTrip.startTime * 1000
+                              ).getUTCMonth() +
+                                1) +
+                              "/" +
+                              new Date(
+                                subTrip.startTime * 1000
+                              ).getUTCFullYear()}
+                          </div>
+                        </div>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>End Time:</div>
+                          <div className={classes.value}>
+                            {new Date(subTrip.endTime * 1000).getUTCDate() +
+                              "/" +
+                              (new Date(subTrip.endTime * 1000).getUTCMonth() +
+                                1) +
+                              "/" +
+                              new Date(subTrip.endTime * 1000).getUTCFullYear()}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={classes.subTripContent}>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>Start Location:</div>
+                          <div className={classes.value}></div>
+                        </div>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>End Location:</div>
+                          <div className={classes.value}></div>
+                        </div>
+                      </div>
+                      <div className={classes.subTripContent}>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>Status: </div>
+                          <div className={classes.value}>
+                            {subTrip?.status === "S"
+                              ? "Stopped"
+                              : subTrip?.status === "M"
+                              ? "Moving"
+                              : ""}
+                          </div>
+                        </div>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>
+                            Distance Travelled:{" "}
+                          </div>
+                          <div className={classes.value}>
+                            {subTrip?.distanceTravelled}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={classes.subTripContent}>
+                        <div className={classes.contentDetails}>
+                          <div className={classes.label}>Avg Mileage: </div>
+                          <div className={classes.value}>
+                            {subTrip?.avgMileage}
+                          </div>
+                        </div>
+                      </div>
+                    </CardActionArea>
+                  </Card>
+                </div>
+              ))}
+          </div>
+        </Popover>
       </TabPanel>
     </div>
   );

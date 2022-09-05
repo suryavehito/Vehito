@@ -37,11 +37,10 @@ const useStyles = makeStyles({
 
 export default function VehicleDetailsCard(props) {
   const classes = useStyles();
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [value, setValue] = React.useState("");
   const [location, setLocation] = React.useState("");
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 

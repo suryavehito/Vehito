@@ -35,7 +35,7 @@ const Map = (props) => {
 
   return waypoints.length >= 2 ? (
     <GoogleMap
-      zoom={14}
+      zoom={20}
       center={{ lat: waypoints[0].lat, lng: waypoints[0].lng }}
     >
       {waypoints && (

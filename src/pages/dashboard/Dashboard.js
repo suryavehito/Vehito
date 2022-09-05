@@ -107,6 +107,9 @@ const GreenCheckbox = withStyles({
 })((props) => <Checkbox color="default" {...props} />);
 
 const Dashboard = () => {
+  const [refreshCnt, setRefreshCnt] = useState(0);
+  const [isItemSelected, setIsItemSelected] = useState(false);
+  const [vehicle, setVehicle] = useState(null);
   const [settings, setSettings] = useState([
     {
       name: "Show All Vehilces",
@@ -200,19 +203,59 @@ const Dashboard = () => {
 
   const getReverseGeocodingData = (lat, lng) => {
     var latlng = new window.google.maps.LatLng(lat, lng);
-    // This is making the Geocode request
     var geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ latLng: latlng }, (results, status) => {
       if (status !== window.google.maps.GeocoderStatus.OK) {
         return;
       }
-      // This is checking to see if the Geoeode Status is OK before proceeding
       if (status === window.google.maps.GeocoderStatus.OK) {
         var address = results[0].formatted_address;
         setData({ ...data, location: address });
       }
     });
   };
+
+  useEffect(() => {
+    let intervalID = setTimeout(() => setRefreshCnt(refreshCnt + 1), 60000);
+    return () => {
+      clearTimeout(intervalID);
+    };
+  }, [refreshCnt]);
+
+  useEffect(() => {
+    if (isItemSelected && vehicle !== null) {
+      getCurrentData(vehicle.assetId).then((response) => {
+        if (response) {
+          setData({
+            ...data,
+            lat: response.lat,
+            lng: response.longitude,
+            location: vehicle.currentLocation,
+            vid: vehicle.assetId,
+            display: "block",
+            vehicleDetails: {
+              ...vehicle,
+              ...response,
+            },
+            status: response.status,
+            assetId: vehicle.assetId,
+            isMarkerShown: !!response.lat && !!response.longitude,
+          });
+        } else {
+          setData({
+            ...data,
+            location: vehicle.currentLocation,
+            vid: vehicle.assetId,
+            display: "block",
+            vehicleDetails: {},
+            status: "",
+            assetId: vehicle.assetId,
+            isMarkerShown: !!response.lat && !!response.longitude,
+          });
+        }
+      });
+    }
+  }, [refreshCnt]);
 
   const onListItemClickHandler = (vehicle) => {
     getReverseGeocodingData(vehicle.lat, vehicle.lng);
@@ -246,6 +289,8 @@ const Dashboard = () => {
         });
       }
     });
+    setVehicle(vehicle);
+    setIsItemSelected(true);
   };
 
   const closeInfoWindow = () => {

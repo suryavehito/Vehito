@@ -6,7 +6,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import VehicleDetailsCard from "../../components/card/VehicleDetailsCard";
-import { VehicleMap } from "../../components/maps/VehicleMap";
+import VehicleMap from "../../components/maps/VehicleMap";
 import Grid from "@material-ui/core/Grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -156,7 +156,11 @@ export default function CustomTabs(props) {
   }, [value]);
 
   useEffect(() => {
-    if (props.vehicleDetails && props.vehicleDetails.imei) {
+    if (
+      props.vehicleDetails &&
+      props.vehicleDetails.imei &&
+      history.location.pathname !== "/vehicle/dashboard"
+    ) {
       let startTime = "";
       const endTime = new Date().getTime();
       switch (routesTimeGap) {
@@ -311,6 +315,15 @@ export default function CustomTabs(props) {
     setSelectedVehicleCategory(selectedVehicleCategory);
   }, [props.selectedList]);
 
+  useEffect(() => {
+    if (history.location.pathname === "/vehicle/dashboard") {
+      let routes = props?.vehicleDetails?.latLongStructs?.map((loc) => {
+        return [Number(loc?.latitude), Number(loc?.longitude)];
+      });
+      setRoutes(routes || []);
+    }
+  }, [props?.vehicleDetails]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -392,6 +405,7 @@ export default function CustomTabs(props) {
         <VehicleMap
           closeInfoWindow={props.closeInfoWindow}
           vid={props.vid}
+          vehicleDetails={props?.vehicleDetails}
           openInfoWindow={props.openInfoWindow}
           isOpenInfoWindow={props.isOpenInfoWindow}
           isMarkerShown={props.isMarkerShown}
@@ -399,7 +413,7 @@ export default function CustomTabs(props) {
           lng={props.lng}
           status={props.status}
           location={props.location}
-          isRoute={showRoutes && routes.length > 0}
+          isRoute={props?.vehicleDetails?.lastLocations?.length > 0}
           origin={{ lat: 22.293147151391796, lng: 73.16025681813052 }}
           destination={{ lat: 24.765771788199572, lng: 73.72605267807154 }}
           directions={routes}

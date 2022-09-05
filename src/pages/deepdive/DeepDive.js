@@ -92,7 +92,7 @@ const DeepDive = (props) => {
         setLastEndTime(endTime);
       }
     });
-  }, [refreshCnt]);
+  }, []);
 
   useEffect(() => {
     let startTime = moment().subtract(1, "h").unix();
@@ -119,10 +119,6 @@ const DeepDive = (props) => {
       setLastEndTime(endTime);
     });
   }, [durationValue]);
-
-  setInterval(() => {
-    setRefreshCnt(refreshCnt + 1);
-  }, 60000);
 
   const getLocation = (loc) => {
     const geocoder = new window.google.maps.Geocoder();
