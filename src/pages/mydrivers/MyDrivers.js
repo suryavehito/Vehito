@@ -18,6 +18,7 @@ import Footer from "../../components/footer/Footer";
 import CustomFilterMenu from "../../components/menu/CustomFilterMenu";
 import { Avatar, Container, Grid } from "@material-ui/core";
 import { getAllDriver } from "../../api/driver.api";
+import { getDriverProfileImage } from "../../api/driver.api";
 
 const styles = (theme) => ({
   driverDetailsCard: {
@@ -30,6 +31,7 @@ const styles = (theme) => ({
     paddingBottom: 15,
     cursor: "pointer",
     width: "100%",
+    border: "1px solid #0f52ba",
   },
   actionsContainer: {
     display: "flex",
@@ -62,6 +64,8 @@ const MyDrivers = (props) => {
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [driverDpImagesUrls, setDriverDpImagesUrls] = useState(null);
 
   useEffect(() => {
     if (!sessionStorage.getItem("issuedToken")) {
@@ -148,15 +152,38 @@ const MyDrivers = (props) => {
     allDrivers
       .then((response) => {
         setDriverDetails(response || []);
+        if (response) {
+          response.forEach((driver, index) => {
+            getDriverDpImage(driver?.driverId, index);
+          });
+        }
       })
       .catch(() => {
         setDriverDetails([]);
       });
   };
 
+  const getDriverDpImage = (driverId, index) => {
+    const getProfileImageResponse = getDriverProfileImage(driverId).then(
+      (res) => {
+        if (res) {
+          setDriverDpImagesUrls((prevState) => ({
+            ...prevState,
+            [index]: `data:image/png;base64,${res}`,
+          }));
+        } else {
+          setDriverDpImagesUrls((prevState) => ({
+            ...prevState,
+            [index]: ``,
+          }));
+        }
+      }
+    );
+  };
+
   // redirects to driver details page with driver id
   const driverDetailsClick = (driverId) => {
-    history.push("/driver/mydrivers/" + driverId);
+    history.push(`/driver/mydrivers/${driverId}`);
   };
 
   const { classes } = props;
@@ -205,10 +232,17 @@ const MyDrivers = (props) => {
           <Typography variant="h6">No Driver Details Available.</Typography>
         ) : (
           <GridList cols={cards} cellHeight="auto">
-            {driverDetails.map((driverDetails) => (
+            {driverDetails.map((driverDetails, index) => (
               <GridListTile key={"driver" + driverDetails.id}>
                 <Card className={classes.driverDetailsCard}>
-                  <CardActionArea>
+                  <CardActionArea
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     {driverDetails.driverImage ? (
                       <CardMedia
                         component="img"
@@ -221,6 +255,7 @@ const MyDrivers = (props) => {
                         <Avatar
                           alt="driver_image"
                           className={classes.placeholderImage}
+                          src={driverDpImagesUrls && driverDpImagesUrls[index]}
                         />
                       </div>
                     )}

@@ -136,7 +136,6 @@ export default function EditPreference() {
     suddenAccelerateAlert: false,
     engineOverloadAlert: false,
     rashTurnAlert: false,
-    fuelCostAlert: true,
   });
 
   const [isDisabled, setIsDisabled] = React.useState(true);

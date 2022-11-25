@@ -19,21 +19,22 @@ import { getAllTrip } from "../../api/trip.api";
 
 const styles = (theme) => ({
   tripDetailsCard: {
-    height: '200px',
-    maxHeight: '200px',
+    height: "200px",
+    maxHeight: "200px",
     marginTop: 15,
     marginBottom: 10,
     marginLeft: "auto",
     marginRight: "auto",
     paddingBottom: 15,
     cursor: "pointer",
-    width: "100%"
+    width: "100%",
+    border: "1px solid #0f52ba",
   },
   actionsContainer: {
     display: "flex",
     alignItems: "center",
     padding: "0px 20px",
-    marginTop: "1rem"
+    marginTop: "1rem",
   },
   placeholderImage: {
     width: theme.spacing(17),
@@ -44,17 +45,16 @@ const styles = (theme) => ({
     },
     display: "flex",
     justifyContent: "center",
-    color: "rgba(0, 0, 0, 0.54)"
+    color: "rgba(0, 0, 0, 0.54)",
   },
 });
 
 const Trips = (props) => {
-
   const [tripDetails, setTripDetails] = useState([]);
 
   const [cards, setCards] = useState(null);
 
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState([]);
 
   const [mounted, setMounted] = useState(false);
 
@@ -63,15 +63,15 @@ const Trips = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => { })
+    setTimeout(() => {});
     getTripDetails();
     noOfColumns();
-    setMounted(true)
+    setMounted(true);
     //when the window is resized calls the noOfColumns method
     window.addEventListener("resize", noOfColumns);
     return () => {
       window.removeEventListener("resize", noOfColumns);
-    }
+    };
   }, []);
 
   const onTagsChange = (event, values) => {
@@ -100,7 +100,7 @@ const Trips = (props) => {
 
   const addClick = () => {
     history.push("/trips/new");
-  }
+  };
 
   //method updates the no columns according to the window size
   const noOfColumns = () => {
@@ -115,7 +115,7 @@ const Trips = (props) => {
     }
 
     if (window.innerWidth >= 1001 && window.innerWidth <= 1270) {
-      setCards(3)
+      setCards(3);
       return;
     }
 
@@ -124,7 +124,7 @@ const Trips = (props) => {
       return;
     }
     if (window.innerWidth >= 1530) {
-      setCards(5)
+      setCards(5);
       return;
     }
   };
@@ -132,9 +132,11 @@ const Trips = (props) => {
   //fetches the restaurants from backend
   const getTripDetails = () => {
     const allTrips = getAllTrip();
-    allTrips.then((response) => {
+    allTrips
+      .then((response) => {
         setTripDetails(response || []);
-      }).catch(() => {   
+      })
+      .catch(() => {
         setTripDetails([]);
       });
   };
@@ -155,7 +157,7 @@ const Trips = (props) => {
           lg={4}
           xs={12}
           style={{
-            margin: "auto"
+            margin: "auto",
           }}
         >
           <input
@@ -171,7 +173,7 @@ const Trips = (props) => {
           item
           xs={"auto"}
           style={{
-            marginRight: "1rem"
+            marginRight: "1rem",
           }}
         >
           <Button
@@ -183,13 +185,13 @@ const Trips = (props) => {
             Add
           </Button>
         </Grid>
-      </Grid >
+      </Grid>
 
       <Container style={{ minHeight: "77vh" }}>
         {tripDetails.length === 0 ? (
           <Typography variant="h6">No Trip Details Available.</Typography>
         ) : (
-          <GridList cols={'cards'} cellHeight="auto">
+          <GridList cols={"cards"} cellHeight="auto">
             {tripDetails.map((tripDetails) => (
               <GridListTile key={"trip" + tripDetails.id}>
                 <Card className={classes.tripDetailsCard}>
@@ -197,7 +199,8 @@ const Trips = (props) => {
                     <CardContent>
                       <div className="trip-title-div">
                         <Typography gutterBottom variant="h5" component="h2">
-                          {tripDetails.startLocation} -> {tripDetails.endLocation}
+                          {tripDetails.startLocation} ->{" "}
+                          {tripDetails.endLocation}
                         </Typography>
                       </div>
                       <div className="trip-subtitle-div">
@@ -229,10 +232,10 @@ const Trips = (props) => {
         )}
       </Container>
       <Footer />
-    </div >
+    </div>
   ) : (
     ""
   );
-}
+};
 
 export default withStyles(styles)(Trips);

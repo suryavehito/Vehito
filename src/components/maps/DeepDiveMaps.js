@@ -62,11 +62,19 @@ const Map = (props) => {
         <InfoWindow onCloseClick={closeInfoWindow} position={infoPosition}>
           <div>
             {index !== -1 && props?.waypoints[index]?.signalStrength && (
-              <Typography variant="body2">
-                Signal Strength: {props?.waypoints[index]?.signalStrength}
-              </Typography>
+              <>
+                <Typography variant="body2">
+                  Signal Strength: {props?.waypoints[index]?.signalStrength}
+                </Typography>
+              </>
             )}
             <Typography variant="body2">Location: {location}</Typography>
+            <Typography variant="body2">
+              Speed: {props?.waypoints[index]?.speed}
+            </Typography>
+            <Typography variant="body2">
+              Date: {props?.waypoints[index]?.dateTime.split(" ")[0]}
+            </Typography>
           </div>
         </InfoWindow>
       )}

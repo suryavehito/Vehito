@@ -39,7 +39,7 @@ import TimelineConnector from "@material-ui/lab/TimelineConnector";
 import TimelineContent from "@material-ui/lab/TimelineContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import "./DeepDiveTabsCard.css";
-import { getAllTripAnalyticData } from "../../api/trip.api";
+import { getAllTripAnalyticData, getAllTrips } from "../../api/trip.api";
 import { getLocation } from "../../utils/getLocation";
 
 function TabPanel(props) {
@@ -188,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
 export default function DeepDiveTabsCard(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const { assetId } = useParams();
+  const { assetId, imei } = useParams();
   const [trips, setTrips] = React.useState([]);
   const [location, setLocation] = useState("");
   const [trip, setTrip] = useState(null);
@@ -198,7 +198,7 @@ export default function DeepDiveTabsCard(props) {
   const id = open ? "sub-trips-popover" : undefined;
 
   React.useEffect((trips) => {
-    getAllTripAnalyticData(assetId).then((response) => {
+    getAllTrips(assetId).then((response) => {
       setTrips(response);
     });
     getLocation(
@@ -215,6 +215,12 @@ export default function DeepDiveTabsCard(props) {
     setAnchorEl(null);
   };
 
+  const getTripAnalytics = (tripId) => {
+    getAllTripAnalyticData(imei, tripId).then((response) => {
+      setTrip(response);
+    });
+  };
+
   return (
     <div className={classes.root}>
       <AppBar className={classes.appBar} position="static">
@@ -224,19 +230,19 @@ export default function DeepDiveTabsCard(props) {
           onChange={handleChange}
           aria-label="deep dive tabs"
         >
-          <Tab
+          {/* <Tab
             style={{ textTransform: "capitalize" }}
             label="Dashboard"
             {...a11yProps(0)}
-          />
+          /> */}
           <Tab
             style={{ textTransform: "capitalize" }}
             label="Trips"
-            {...a11yProps(1)}
+            {...a11yProps(0)}
           />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0}>
+      {/* <TabPanel value={value} index={0}>
         <div className={classes.mainDiv}>
           <div className={classes.firstDiv}>
             <Typography variant="body2" component="p">
@@ -264,7 +270,7 @@ export default function DeepDiveTabsCard(props) {
         <div className={classes.mainDiv}>
           <div className={classes.firstDiv}>
             <Typography variant="body2" component="p">
-              Geofence:
+              Location:
             </Typography>
           </div>
           <div className={classes.secondDiv}>
@@ -429,8 +435,8 @@ export default function DeepDiveTabsCard(props) {
         <Typography component="div">
           <Progress value={20} />
         </Typography>
-      </TabPanel>
-      <TabPanel style={{ padding: 0 }} value={value} index={1}>
+      </TabPanel> */}
+      <TabPanel style={{ padding: 0 }} value={value} index={0}>
         <Grid container>
           <Grid item lg={12}>
             {trips.map((trip, index) => (
@@ -459,24 +465,24 @@ export default function DeepDiveTabsCard(props) {
                           <Tooltip
                             arrow
                             placement="bottom-start"
-                            title={trip.source}
+                            title={trip.startLocation}
                             aria-label="end-location"
                           >
                             <TimelineContent
                               className={classes.timelineContent}
                             >
-                              {trip.source}
+                              {trip?.startLocation}
                             </TimelineContent>
                           </Tooltip>
                           <div className={classes.dateAndTimeDiv}>
                             <p style={{ marginTop: "0.35rem" }}>
-                              {new Date(trip.startDate * 1000).getUTCDate() +
+                              {new Date(trip.startTime * 1000).getUTCDate() +
                                 "/" +
-                                (new Date(trip.startDate * 1000).getUTCMonth() +
+                                (new Date(trip.startTime * 1000).getUTCMonth() +
                                   1) +
                                 "/" +
                                 new Date(
-                                  trip.startDate * 1000
+                                  trip.startTime * 1000
                                 ).getUTCFullYear()}
                               {`, Total Km: ${trip.totalDistance}`}
                             </p>
@@ -487,25 +493,25 @@ export default function DeepDiveTabsCard(props) {
                           <Tooltip
                             arrow
                             placement="bottom-start"
-                            title={trip.destination}
+                            title={trip.endLocation}
                             aria-label="end-location"
                           >
                             <TimelineContent
                               className={classes.timelineContent}
                             >
-                              {trip.destination}
+                              {trip.endLocation}
                             </TimelineContent>
                           </Tooltip>
                           <div className={classes.dateAndTimeDiv}>
                             <p style={{ marginTop: "0.35rem" }}>
-                              {new Date(trip.endDate * 1000).getUTCDate() +
+                              {new Date(trip.endTime * 1000).getUTCDate() +
                                 "/" +
-                                (new Date(trip.endDate * 1000).getUTCMonth() +
+                                (new Date(trip.endTime * 1000).getUTCMonth() +
                                   1) +
                                 "/" +
-                                new Date(trip.endDate * 1000).getUTCFullYear()}
+                                new Date(trip.endTime * 1000).getUTCFullYear()}
                               {`, Duration: ${new Date(
-                                trip.endDate - trip.startDate
+                                trip.endTime - trip.startTime
                               ).getHours()} Hrs`}
                             </p>
                           </div>
@@ -522,7 +528,7 @@ export default function DeepDiveTabsCard(props) {
                     size="small"
                     onClick={(e) => {
                       setAnchorEl(e.currentTarget);
-                      setTrip(trip);
+                      getTripAnalytics(trip?.tripId);
                     }}
                   >
                     Analyse Trip
@@ -561,8 +567,59 @@ export default function DeepDiveTabsCard(props) {
                 <CloseIcon />
               </IconButton>
             </div>
-            {trip !== null &&
-              trip?.subTripDataList.map((subTrip, i) => (
+            {console.log(trip)}
+            {trip !== null && (
+              <>
+                <div className={classes.topPortion}>
+                  <div>Driver Name:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.driverName}
+                  </div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Asset Name:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.assetName}
+                  </div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Average Speed:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.avgSpeed}
+                  </div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Total Distance:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.totalDistance}
+                  </div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Average Mileage:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.avgMileage}
+                  </div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Fuel Level:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.fuelStart}
+                  </div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Registration Number:</div>
+                  <div className={classes.topPortionValues}>{trip?.regNo}</div>
+                </div>
+                <div className={classes.topPortion}>
+                  <div>Trip Status:</div>
+                  <div className={classes.topPortionValues}>
+                    {trip?.tripStatus}
+                  </div>
+                </div>
+              </>
+            )}
+            {(trip !== null && trip?.subTripDataList) ||
+              [].map((subTrip, i) => (
                 <div key={subTrip?.startLocation}>
                   <Typography className={classes.tripTitle}>{`Trip ${
                     i + 1

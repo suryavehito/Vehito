@@ -1,7 +1,11 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
-import { cloneDeep, map } from 'lodash';
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
+import { cloneDeep, map } from "lodash";
 import { getLocation } from "../../utils/getLocation";
 
 const columns = [
@@ -12,9 +16,17 @@ const columns = [
   { field: "value", headerName: "Value", width: 175 },
 ];
 
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
 export default function EventsDataTable({ eventDetails }) {
   const [rows, setRows] = useState([]);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [firstRowManipulated, setFirstRowManipulated] = useState(false);
 
@@ -34,7 +46,7 @@ export default function EventsDataTable({ eventDetails }) {
             eventName: item?.eventName.replaceAll("_", " "),
             date: event.time.split(" ")[0],
             time: event.time.split(" ")[1],
-            eventLocationLatLong: event.location,
+            eventLocation: event.location,
             value: item?.value,
           },
         ])
@@ -47,7 +59,7 @@ export default function EventsDataTable({ eventDetails }) {
   };
 
   const convertlatLongFormat = (str) => {
-    let splitArray = str.split(',');
+    let splitArray = str.split(",");
     return map(splitArray, (item) => item.slice(0, item.length - 2));
   };
 
@@ -65,7 +77,7 @@ export default function EventsDataTable({ eventDetails }) {
             item.eventLocation = res;
           });
         }
-      };
+      }
       setTimeout(() => {
         setRows(clonedRows);
       }, 2000);
@@ -74,14 +86,14 @@ export default function EventsDataTable({ eventDetails }) {
 
   useEffect(() => {
     if (rows.length > 0 && currentPage != 0) {
-      setLocationAddressString();
+      // setLocationAddressString();
     }
   }, [currentPage]);
 
   useEffect(() => {
     if (rows.length > 0 && !firstRowManipulated && currentPage === 0) {
       setFirstRowManipulated(true);
-      setLocationAddressString();
+      // setLocationAddressString();
     }
   }, [rows]);
 
@@ -90,6 +102,9 @@ export default function EventsDataTable({ eventDetails }) {
       <DataGrid
         rows={rows}
         columns={columns}
+        components={{
+          Toolbar: CustomToolbar,
+        }}
         pagination
         pageSize={pageSize}
         onPageChange={(event) => onPagenationChange(event)}

@@ -1,5 +1,6 @@
 import api from "./vehitoFleetBaseAPI";
 import enzoApi from "./vehitoEnzoBaseAPI";
+import vtsApi from "./vtsBaseApi";
 import {
   ASSET_ADD,
   ASSET_GET_ALL,
@@ -13,7 +14,11 @@ import {
   DRIVER_UNASSIGNED,
   FILE_GET_ASSET_IMAGE,
   FILE_UPLOAD_ASSET_IMAGE,
+  GET_ASSET_IMAGES,
+  GET_IMAGE_DETAILS,
   GET_LIVE_DATA_ASSET,
+  GET_MAKE_DETAILS,
+  GET_MODEL_DETAILS,
 } from "./constant";
 
 export const addAsset = async (data) => {
@@ -55,22 +60,32 @@ export const getAssetDetailById = async (assetId) => {
   return result.data;
 };
 
-export const uploadAssetImage = async (data, regNo, name) => {
+export const uploadAssetImage = async (data, regNo) => {
   const userId = sessionStorage.getItem("userId");
   const result = await api.post(
-    FILE_UPLOAD_ASSET_IMAGE.replace(":userId", userId)
-      .replace(":regNo", regNo)
-      .replace(":name", name),
+    FILE_UPLOAD_ASSET_IMAGE.replace(":regNo", regNo).replace(":userId", userId),
     data,
     {
       headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
     }
   );
   return {
-    url: FILE_GET_ASSET_IMAGE.replace(":userId", userId)
-      .replace(":regNo", regNo)
-      .replace(":name", name),
+    url: `${process.env.REACT_APP_FLEET_API_BASE_URL}${GET_ASSET_IMAGES.replace(
+      ":userId",
+      userId
+    ).replace(":regNum", regNo)}`,
   };
+};
+
+export const getAssetImages = async (regNum) => {
+  const userId = sessionStorage.getItem("userId");
+  const result = await api.get(
+    GET_ASSET_IMAGES.replace(":regNum", regNum).replace(":userId", userId),
+    {
+      headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
+    }
+  );
+  return result.data;
 };
 
 export const getCurrentDriverMap = async (assetId) => {
@@ -82,6 +97,43 @@ export const getCurrentDriverMap = async (assetId) => {
     ),
     {
       headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
+    }
+  );
+  return result.data;
+};
+
+export const getMakeDetailsByCategory = async (category) => {
+  const result = await api.get(
+    GET_MAKE_DETAILS.replace(":category", category),
+    {
+      headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
+    }
+  );
+  return result.data;
+};
+
+export const getModelDetailsByUsingCategoryAndMake = async (category, make) => {
+  const result = await api.get(
+    GET_MODEL_DETAILS.replace(":category", category).replace(":make", make),
+    {
+      headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
+    }
+  );
+  return result.data;
+};
+
+export const getImageDetailsByUsingCategoryMakeAndModel = async (
+  category,
+  make,
+  model
+) => {
+  const result = await api.get(
+    GET_IMAGE_DETAILS.replace(":category", category)
+      .replace(":make", make)
+      .replace(":model", model),
+    {
+      headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
+      baseURL: "",
     }
   );
   return result.data;
@@ -129,7 +181,7 @@ export const unAssignDriverFromAsset = async (assetId) => {
 
 export const getCurrentData = async (assetId) => {
   const userId = sessionStorage.getItem("userId");
-  const result = await enzoApi.get(
+  const result = await vtsApi.get(
     ASSET_GET_CURRENT_DATA.replace(":assetId", assetId),
     {
       headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },

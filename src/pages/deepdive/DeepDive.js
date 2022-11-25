@@ -10,7 +10,6 @@ import Footer from "../../components/footer/Footer";
 import { Chart } from "react-google-charts";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import { data } from "./DeepdiveData";
 import { withStyles } from "@material-ui/core/styles";
 import { useParams } from "react-router-dom";
 import { getCurrentData, getLocations } from "../../api/assets.api";
@@ -38,16 +37,6 @@ const DeepDive = (props) => {
   const [durationValue, setDurationValue] = useState(params.duration);
 
   const [refreshCnt, setRefreshCnt] = useState(0);
-
-  const [stateData, setStateData] = useState({
-    oiltemp: false,
-    rpm: false,
-    speed: false,
-    coolantTemp: false,
-    batteryVoltage: false,
-    engineLoad: false,
-    deepdiveData: data.rpm,
-  });
 
   const { assetId } = useParams();
 
@@ -152,84 +141,6 @@ const DeepDive = (props) => {
 
   const handleChange = (e) => {
     let name = e.target.name;
-
-    if (name === "oiltemp") {
-      setStateData({
-        oiltemp: true,
-        rpm: false,
-        speed: false,
-        coolantTemp: false,
-        batteryVoltage: false,
-        engineLoad: false,
-        deepdiveData: data.oilTemp,
-      });
-      return;
-    }
-
-    if (name === "rpm") {
-      setStateData({
-        oiltemp: false,
-        rpm: true,
-        speed: false,
-        coolantTemp: false,
-        batteryVoltage: false,
-        engineLoad: false,
-        deepdiveData: data.rpm,
-      });
-      return;
-    }
-
-    if (name === "speed") {
-      setStateData({
-        oiltemp: false,
-        rpm: false,
-        speed: true,
-        coolantTemp: false,
-        batteryVoltage: false,
-        engineLoad: false,
-        deepdiveData: data.speed,
-      });
-      return;
-    }
-
-    if (name === "coolantTemp") {
-      setStateData({
-        oiltemp: false,
-        rpm: false,
-        speed: false,
-        coolantTemp: true,
-        batteryVoltage: false,
-        engineLoad: false,
-        deepdiveData: data.coolantTemp,
-      });
-      return;
-    }
-
-    if (name === "batteryVoltage") {
-      setStateData({
-        oiltemp: false,
-        rpm: false,
-        speed: false,
-        coolantTemp: false,
-        batteryVoltage: true,
-        engineLoad: false,
-        deepdiveData: data.batteryVoltage,
-      });
-      return;
-    }
-
-    if (name === "engineLoad") {
-      setStateData({
-        oiltemp: false,
-        rpm: false,
-        speed: false,
-        coolantTemp: false,
-        batteryVoltage: false,
-        engineLoad: true,
-        deepdiveData: data.engineLoad,
-      });
-      return;
-    }
   };
 
   return (
@@ -277,100 +188,6 @@ const DeepDive = (props) => {
                 vehicleDetails={vehicleDetails}
               />
             )}
-          </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item lg={2} style={{ paddingTop: "3.30rem" }}>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="oiltemp"
-                    color="primary"
-                    onChange={handleChange}
-                    checked={stateData.oiltemp}
-                  />
-                }
-                label="Oil Temp"
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="rpm"
-                    color="primary"
-                    onChange={handleChange}
-                    checked={stateData.rpm}
-                  />
-                }
-                label="RPM"
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="speed"
-                    color="primary"
-                    onChange={handleChange}
-                    checked={stateData.speed}
-                  />
-                }
-                label="Speed"
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="coolantTemp"
-                    color="primary"
-                    onChange={handleChange}
-                    checked={stateData.coolantTemp}
-                  />
-                }
-                label="Coolant Temp"
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="batteryVoltage"
-                    color="primary"
-                    onChange={handleChange}
-                    checked={stateData.batteryVoltage}
-                  />
-                }
-                label="Battery Voltage"
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="engineLoad"
-                    color="primary"
-                    onChange={handleChange}
-                    checked={stateData.engineLoad}
-                  />
-                }
-                label="Engine Load"
-              />
-            </div>
-          </Grid>
-          <Grid item lg={10}>
-            <Chart
-              width={"100%"}
-              height={"350px"}
-              chartType="LineChart"
-              loader={<div>Loading Chart</div>}
-              data={stateData.deepdiveData}
-              options={{
-                width: 1050,
-              }}
-            />
           </Grid>
         </Grid>
       </Container>

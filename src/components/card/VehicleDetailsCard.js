@@ -63,7 +63,7 @@ export default function VehicleDetailsCard(props) {
       case "status":
         switch (data[key]) {
           case "H":
-            value = "Hault";
+            value = "Halt";
             break;
           case "S":
             value = "Stopped";
@@ -129,7 +129,7 @@ export default function VehicleDetailsCard(props) {
     },
     {
       key: "currentLocation",
-      label: "Geofence",
+      label: "Location",
       suffix: "",
     },
     // {
@@ -143,7 +143,7 @@ export default function VehicleDetailsCard(props) {
     },
     {
       key: "odometer",
-      label: "Oddometer",
+      label: "Odometer",
       suffix: "",
     },
     {
@@ -218,7 +218,7 @@ export default function VehicleDetailsCard(props) {
                 </div>
                 <div className={classes.secondDiv}>
                   <Typography variant="body2" component="p">
-                    {field?.label === "Geofence"
+                    {field?.label === "Location"
                       ? location
                       : getValue(props.vehicleDetails, field)}
                   </Typography>

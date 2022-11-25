@@ -32,7 +32,7 @@ class VehicleDetailsForm extends Component {
                 />
               </div>
             </div>
-            <div className="row">
+            {/* <div className="row">
               <div className="col-40">
                 <label className="labelText" htmlFor="">
                   Make
@@ -81,7 +81,7 @@ class VehicleDetailsForm extends Component {
                   placeholder="Modal"
                 />
               </div>
-            </div>
+            </div> */}
             <div className="row">
               <div className="col-40">
                 <label className="labelText" htmlFor="engineNo">

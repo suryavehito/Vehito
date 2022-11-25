@@ -32,6 +32,7 @@ const styles = (theme) => ({
     marginRight: "auto",
     paddingBottom: 15,
     cursor: "pointer",
+    border: "1px solid #0f52ba",
   },
   actionsContainer: {
     display: "flex",

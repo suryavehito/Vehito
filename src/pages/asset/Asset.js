@@ -19,13 +19,17 @@ import Tabs from "@material-ui/core/Tabs";
 import DriveEtaIcon from "@material-ui/icons/DriveEta";
 import EditIcon from "@material-ui/icons/Edit";
 import PropTypes from "prop-types";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {
   addAsset,
   assignDriverToAsset,
   getAssetDetailById,
+  getAssetImages,
   getCurrentDriverMap,
+  getImageDetailsByUsingCategoryMakeAndModel,
+  getMakeDetailsByCategory,
+  getModelDetailsByUsingCategoryAndMake,
   unAssignDriverFromAsset,
   updateAsset,
   updateDriverToAsset,
@@ -182,6 +186,10 @@ export default function Asset(props) {
     modifiedOn: 0,
   });
 
+  const [makeDetails, setMakeDetails] = useState(null);
+  const [modelDetails, setModelDetails] = useState(null);
+  const [finalModelDetails, setFinalModelDetails] = useState(null);
+
   const [vehicleImages, setVehicleImages] = React.useState([]);
 
   const [isDriverSet, setIsDriverSet] = React.useState(false);
@@ -219,6 +227,54 @@ export default function Asset(props) {
     }
   };
 
+  const getMakeDetails = (category) => {
+    if (category) {
+      const makeDetailsResponse = getMakeDetailsByCategory(category);
+      makeDetailsResponse
+        .then((makeDetailsResponse) => {
+          setMakeDetails(makeDetailsResponse);
+        })
+        .catch((e) => {
+          setMakeDetails(null);
+        });
+    }
+  };
+
+  const getModelDetails = (category, make) => {
+    if (category && make) {
+      const modelDetailsResponse = getModelDetailsByUsingCategoryAndMake(
+        category,
+        make
+      );
+      modelDetailsResponse
+        .then((modelDetailsResponse) => {
+          setModelDetails(modelDetailsResponse);
+        })
+        .catch((e) => {
+          setModelDetails(null);
+        });
+    }
+  };
+
+  const getImage = (category, make, model) => {
+    if (category && make && model) {
+      vehicleImages.push(
+        `${process.env.REACT_APP_API}/data/assets/${category}/${make}/${model}`
+      );
+    }
+  };
+
+  const getImages = () => {
+    const getImagesResponse = getAssetImages(vehicleData?.regNum);
+    getImagesResponse.then((res) => console.log(res));
+  };
+
+  useEffect(() => {
+    if (vehicleData?.regNum) {
+      getImages();
+    }
+  }, [vehicleData?.regNum]);
+
   React.useEffect(() => {
     if (vehicleId && !isNew) {
       const response = getAssetDetailById(vehicleId);
@@ -249,25 +305,20 @@ export default function Asset(props) {
       const file = event.target.files[0];
       const formData = new FormData();
       formData.append("file", file);
-      console.log("file name " + file.name);
-      const uploadResponse = uploadAssetImage(
-        formData,
-        vehicleData.regNum,
-        file.name
-      );
-      uploadResponse.then((response) => {
-        setVehicleImages([
-          ...vehicleImages,
-          "https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/1013938.jpg",
-        ]);
-      });
-      let temp = Array.from(vehicleImages);
-      temp.push(
-        "https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/1013938.jpg"
-      );
-      setVehicleImages(temp);
+      if (vehicleData?.regNum) {
+        const uploadResponse = uploadAssetImage(formData, vehicleData.regNum);
+        uploadResponse.then((response) => {
+          console.log(response);
+          setVehicleImages([
+            ...vehicleImages,
+            `https://s3.ap-south-1.amazonaws.com/picassa.vehito.com/data/catalog/${file?.name}`,
+          ]);
+        });
+        // let temp = Array.from(vehicleImages);
+        // temp.push();
+        // setVehicleImages(temp);
+      }
     }
-    console.log("vehicle len" + vehicleImages.length);
   };
 
   const toggleEditMode = () => {
@@ -328,8 +379,79 @@ export default function Asset(props) {
     }
   };
 
+  useEffect(() => {
+    if (modelDetails !== null) {
+      const modelDetailsWithoutExtension = modelDetails?.map((model) =>
+        removeExtension(model)
+      );
+      const finalModelDetails = modelDetailsWithoutExtension.map((model) =>
+        removeHyphen(model)
+      );
+      setFinalModelDetails(finalModelDetails);
+    }
+  }, [modelDetails]);
+
+  const removeHyphen = (filename) => {
+    return filename.split("-").join(" ");
+  };
+
+  const removeExtension = (filename) => {
+    return filename.substring(0, filename.lastIndexOf(".")) || filename;
+  };
+
+  useEffect(() => {
+    if (vehicleData?.assetType !== "") {
+      getMakeDetails(vehicleData?.assetType);
+    }
+    if (vehicleData?.make !== "") {
+      getModelDetails(
+        vehicleData?.assetType,
+        vehicleData?.make?.split(" ").join("-")
+      );
+    }
+    if (vehicleData?.assetType !== "" && finalModelDetails !== null) {
+      const model = finalModelDetails.filter((el, idx) => {
+        if (el === vehicleData?.model) {
+          console.log("modelDetails ", finalModelDetails);
+          console.log("el ", el);
+          console.log(vehicleData?.model);
+          getImage(
+            vehicleData?.assetType,
+            vehicleData?.make.split(" ").join("-"),
+            modelDetails[idx]
+          );
+        }
+      });
+    }
+  }, [vehicleData]);
+
+  console.log("vehicle images ", vehicleImages);
+
   const onChangeHandler = (event) => {
-    setVehicleData({ ...vehicleData, [event.target.name]: event.target.value });
+    // if (event.target.name === "assetType") {
+    //   getMakeDetails(event.target.value);
+    // }
+    // if (event.target.name === "make") {
+    //   getModelDetails(
+    //     vehicleData?.assetType,
+    //     event.target.value.split(" ").join("-")
+    //   );
+    // }
+    // if (event.target.name === "model") {
+    //   const model = finalModelDetails.filter((el, idx) => {
+    //     if (el === event?.target?.value) {
+    //       getImage(
+    //         vehicleData?.assetType,
+    //         vehicleData?.make.split(" ").join("-"),
+    //         modelDetails[idx]
+    //       );
+    //     }
+    //   });
+    // }
+    setVehicleData({
+      ...vehicleData,
+      [event.target.name]: event.target.value,
+    });
     if (value === 0) {
       generalInfoNextClick() ? setGINextBtn(true) : setGINextBtn(false);
     }
@@ -496,6 +618,9 @@ export default function Asset(props) {
                           edit={edit}
                           onChange={onChangeHandler}
                           state={vehicleData}
+                          makeDetails={makeDetails}
+                          modelFinalDetails={finalModelDetails}
+                          modelDetails={modelDetails}
                         />
                       </Paper>
                     </Grid>
@@ -572,9 +697,7 @@ export default function Asset(props) {
                       id="contained-button-file"
                       type="file"
                       onChange={handleImageChange}
-                      disabled={
-                        vehicleImages.length === 3 || !vehicleData.regNum
-                      }
+                      disabled={vehicleImages.length === 3}
                     />
                     {edit && (
                       <label htmlFor="contained-button-file">
@@ -582,9 +705,7 @@ export default function Asset(props) {
                           variant="contained"
                           color="primary"
                           component="span"
-                          disabled={
-                            vehicleImages.length === 3 || !vehicleData.regNum
-                          }
+                          disabled={vehicleImages.length === 3}
                         >
                           Upload
                         </Button>

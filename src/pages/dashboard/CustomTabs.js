@@ -142,16 +142,18 @@ export default function CustomTabs(props) {
       value !== 0
     ) {
       setValue(0);
-    } else if (
-      history.location.pathname === "/vehicle/dashboard/live" &&
+    }
+    // else if (
+    //   history.location.pathname === "/vehicle/dashboard/live" &&
+    //   value !== 1
+    // ) {
+    //   setValue(1);
+    // }
+    else if (
+      history.location.pathname === "/vehicle/dashboard/events" &&
       value !== 1
     ) {
       setValue(1);
-    } else if (
-      history.location.pathname === "/vehicle/dashboard/events" &&
-      value !== 2
-    ) {
-      setValue(2);
     }
   }, [value]);
 
@@ -360,7 +362,7 @@ export default function CustomTabs(props) {
             }
             {...a11yProps(0)}
           />
-          <Tab
+          {/* <Tab
             disableRipple
             component={Link}
             to={"/vehicle/dashboard/live"}
@@ -370,7 +372,7 @@ export default function CustomTabs(props) {
               </div>
             }
             {...a11yProps(1)}
-          />
+          /> */}
           <Tab
             disableRipple
             component={Link}
@@ -380,7 +382,7 @@ export default function CustomTabs(props) {
                 <FontAwesomeIcon icon={faExclamationTriangle} /> Events
               </div>
             }
-            {...a11yProps(2)}
+            {...a11yProps(1)}
           />
         </Tabs>
       </AppBar>
@@ -419,7 +421,7 @@ export default function CustomTabs(props) {
           directions={routes}
         />
       </TabPanel>
-      <TabPanel box={classes.reportsBox} value={value} index={1}>
+      {/* <TabPanel box={classes.reportsBox} value={value} index={1}>
         {props.selectedList ? (
           <Grid container>
             <ReportsSidebar listItemClickHandler={listItemClickHandler} />
@@ -519,6 +521,17 @@ export default function CustomTabs(props) {
                 <SuddenAccelerationAndHarshBraking />
               )}
             </Grid>
+            <Grid item lg={10}>
+              {reportsList.liveOverView && (
+                <LiveOverView
+                  assetId={props?.assetId}
+                  vehicles={vehiclesArray}
+                  vehicleStatusPercent={vehicleStatusPercent}
+                  vehicleOddometerPercent={vehicleOddometerPercent}
+                  vehicleFuelPercent={vehicleFuelPercent}
+                />
+              )}
+            </Grid>
           </Grid>
         ) : (
           <div className="select-vehicle-text-display-div">
@@ -527,8 +540,8 @@ export default function CustomTabs(props) {
             </Typography>
           </div>
         )}
-      </TabPanel>
-      <TabPanel box={classes.eventsBox} value={value} index={2}>
+      </TabPanel> */}
+      <TabPanel box={classes.eventsBox} value={value} index={1}>
         {props.vid !== "" ? (
           <Grid container>
             <Grid

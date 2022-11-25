@@ -2,6 +2,7 @@ import {
   Avatar,
   Button,
   Container,
+  Snackbar,
   ThemeProvider,
   Typography,
 } from "@material-ui/core";
@@ -13,11 +14,17 @@ import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import EditIcon from "@material-ui/icons/Edit";
+import { Alert } from "@material-ui/lab";
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import { addTrip, getTripDetailById, updateTrip } from "../../../api/trip.api";
+import {
+  addTrip,
+  getActiveTripsByAssetId,
+  getTripDetailById,
+  updateTrip,
+} from "../../../api/trip.api";
 import Footer from "../../../components/footer/Footer";
 import Header from "../../../components/header/Header";
 import AvatarModal from "../../../components/modal/AvatarModal";
@@ -124,6 +131,10 @@ export default function Trip(props) {
 
   const [isEditMode, setIsEditMode] = useState(props.new ? true : false);
 
+  const [selectedAsset, setSelectedAsset] = useState();
+  const [activeTrips, setActiveTrips] = useState(null);
+  const [open, setOpen] = useState(false);
+
   const classes = useStyles();
 
   const [tripData, setTripData] = React.useState({
@@ -135,6 +146,20 @@ export default function Trip(props) {
     driverName: "",
     status: 1,
   });
+
+  useEffect(() => {
+    if (selectedAsset?.assetId && selectedAsset?.userId) {
+      getActiveTripDetails();
+    }
+  }, [selectedAsset]);
+
+  const getActiveTripDetails = () => {
+    const getActiveTripDetailsResponse = getActiveTripsByAssetId(
+      selectedAsset?.assetId,
+      selectedAsset?.userId
+    );
+    getActiveTripDetailsResponse.then((response) => setActiveTrips(response));
+  };
 
   useEffect(() => {
     if (!sessionStorage.getItem("issuedToken")) {
@@ -160,6 +185,16 @@ export default function Trip(props) {
   const saveBtnOnClickHandler = () => {
     const addAssetResponse = props.new
       ? addTrip(tripData)
+      : tripData?.startTime && tripData?.startTime !== undefined
+      ? updateTrip({
+          ...tripData,
+          startTime: new Date(tripData?.startTime).getTime(),
+        })
+      : tripData?.endTime && tripData?.endTime !== undefined
+      ? updateTrip({
+          ...tripData,
+          endTime: new Date(tripData?.endTime).getTime(),
+        })
       : updateTrip(tripData);
     addAssetResponse.then((addAstRes) => {
       if (props.new) {
@@ -177,7 +212,10 @@ export default function Trip(props) {
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
     console.log(" on chagne " + name + value);
-    setTripData({ ...tripData, [name]: value });
+    setTripData({
+      ...tripData,
+      [name]: name === "fuelStart" ? Number(value) : value,
+    });
   };
 
   const onDateChange = (event) => {
@@ -188,8 +226,9 @@ export default function Trip(props) {
 
   const onStartDateChange = (event) => {
     const { name, value } = event.target;
+    console.log(value);
     console.log(" on date chagne " + name + new Date(value).getTime());
-    setTripData({ ...tripData, [name]: new Date(value).getTime(), status: 3 });
+    setTripData({ ...tripData, [name]: value, status: 3 });
   };
 
   const addBreakPoint = () => {
@@ -207,6 +246,10 @@ export default function Trip(props) {
     const tmpBreakPoints = [...tripData.breakPoints];
     tmpBreakPoints[index] = event.target.value;
     setTripData({ ...tripData, breakPoints: tmpBreakPoints });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -248,6 +291,9 @@ export default function Trip(props) {
                         state={tripData}
                         isNew={props.new}
                         isEditMode={isEditMode}
+                        selectedAsset={selectedAsset}
+                        setSelectedAsset={setSelectedAsset}
+                        activeTrips={activeTrips}
                       />
                     )}
                   </Paper>
@@ -267,6 +313,7 @@ export default function Trip(props) {
                   <Button
                     variant="contained"
                     size="large"
+                    disabled={activeTrips !== null && activeTrips?.status < 4}
                     className={classes.button + " editBtn"}
                     startIcon={<EditIcon />}
                     style={{ backgroundColor: "lightblue" }}
@@ -298,6 +345,16 @@ export default function Trip(props) {
             </Grid>
           </Grid>
         </div>
+        <Snackbar
+          open={activeTrips !== null && activeTrips?.status < 4 && !open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        >
+          <Alert onClose={handleClose} severity="warning">
+            A trip is already in progress for the selected asset!
+          </Alert>
+        </Snackbar>
       </Container>
       <Footer />
     </Fragment>

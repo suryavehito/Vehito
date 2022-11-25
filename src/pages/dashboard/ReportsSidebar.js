@@ -90,7 +90,7 @@ function ReportsSidebar(props) {
                 <FontAwesomeIcon icon={faFan} />
               </ListItemIcon>
               <ListItemText primary="Efficiency" />
-            </ListItem>            
+            </ListItem>
             <Divider />
             <ListItem
               button
@@ -114,7 +114,9 @@ function ReportsSidebar(props) {
             <Divider />
             <ListItem
               button
-              onClick={() => props.listItemClickHandler("suddenAccelerationAndHarshBraking")}
+              onClick={() =>
+                props.listItemClickHandler("suddenAccelerationAndHarshBraking")
+              }
             >
               <ListItemIcon style={{ minWidth: 25 }}>
                 <FontAwesomeIcon icon={faFan} />
