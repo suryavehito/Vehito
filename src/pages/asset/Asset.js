@@ -49,6 +49,8 @@ import VehicleType from "../../components/form/VehicleType";
 import Header from "../../components/header/Header";
 import AvatarModal from "../../components/modal/AvatarModal";
 import "./Asset.css";
+import Dashboard from "../dashboard/Dashboard";
+import LiveOverView from "../dashboard/LiveOverView";
 
 const theme = createMuiTheme({
   palette: {
@@ -327,6 +329,7 @@ export default function Asset(props) {
 
   const toggleEditAssignDriver = () => {
     setEditAssignDriver(!editAssignDriver);
+    setSelectedDriver(null);
   };
 
   const saveAssignDriver = () => {
@@ -657,7 +660,7 @@ export default function Asset(props) {
                   >
                     {vehicleImages.map((veh, index) => {
                       return (
-                        <GridListTile>
+                        <GridListTile key={veh}>
                           {edit && (
                             <IconButton
                               onClick={() => removeVehicleImage(index)}
@@ -741,11 +744,19 @@ export default function Asset(props) {
                           className="select"
                           onChange={onDriverChange}
                           disabled={!editAssignDriver}
+                          value={
+                            selectedDriver === null
+                              ? ""
+                              : selectedDriver?.driverId
+                          }
                         >
                           <option value="">Select Driver</option>
                           <option value="unassign">None</option>
-                          {driverList.map((driver) => (
-                            <option value={driver.driverId}>
+                          {driverList.map((driver, index) => (
+                            <option
+                              key={`${driver?.driverId}_${index}`}
+                              value={driver.driverId}
+                            >
                               {driver.fName} {driver.lName}
                             </option>
                           ))}
@@ -811,18 +822,28 @@ export default function Asset(props) {
                 submitOnClickHandler={submitOnClickHandler}
                 image={vehicleData.driverImage}
                 handleClose={handleClose}
-                open={vehicleData.avatarModal}
+                open={vehicleData.avatarModal || false}
               />
             </div>
           </TabPanel>
           {vehicleId && (
             <TabPanel value={value} index={3}>
-              Item Four
+              <Dashboard
+                showHeaderFooter={false}
+                showLeftSideView={false}
+                showTabs={true}
+                isLiveLocation={true}
+                vehicleData={vehicleData}
+              />
             </TabPanel>
           )}
           {vehicleId && (
             <TabPanel value={value} index={4}>
-              Item Five
+              <LiveOverView
+                assetId={vehicleData?.assetId}
+                showSummary={false}
+                isFaultCodes={true}
+              />
             </TabPanel>
           )}
           {value <= lastStep && (

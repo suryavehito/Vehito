@@ -122,7 +122,7 @@ function EventsTab(props) {
   return (
     <Fragment>
       <div className="events-container">
-        <div className="events-header-div">
+        {/* <div className="events-header-div">
           <div className="evnets-title events-header-text">
             <Typography variant="body1">
               Events - {props.selectedVehicleCategory}
@@ -133,7 +133,7 @@ function EventsTab(props) {
               Total Selected Vehicles {props.vehicles.length}
             </Typography>
           </div>
-        </div>
+        </div> */}
         <div className="events-count-text">
           <div className="events-chart-title-div">
             <Typography style={{ fontWeight: "bold" }} variant="body1">

@@ -19,6 +19,7 @@ import {
   GET_LIVE_DATA_ASSET,
   GET_MAKE_DETAILS,
   GET_MODEL_DETAILS,
+  GET_DTC_DATA,
 } from "./constant";
 
 export const addAsset = async (data) => {
@@ -220,5 +221,12 @@ export const getLiveDataAsset = async (assetId) => {
       headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
     }
   );
+  return result.data;
+};
+
+export const getDtcData = async (assetId) => {
+  const result = await vtsApi.get(GET_DTC_DATA.replace(":assetId", assetId), {
+    headers: { "X-Vehito-Auth-Token": sessionStorage.getItem("issuedToken") },
+  });
   return result.data;
 };

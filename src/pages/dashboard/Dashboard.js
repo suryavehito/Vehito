@@ -106,7 +106,13 @@ const GreenCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
-const Dashboard = () => {
+const Dashboard = ({
+  showTabs = true,
+  showLeftSideView = true,
+  showHeaderFooter = true,
+  isLiveLocation = false,
+  vehicleData,
+}) => {
   const [refreshCnt, setRefreshCnt] = useState(0);
   const [isItemSelected, setIsItemSelected] = useState(false);
   const [vehicle, setVehicle] = useState(null);
@@ -132,6 +138,8 @@ const Dashboard = () => {
       SettingsList: [],
     },
   ]);
+
+  const [imei, setImei] = useState("");
 
   const [data, setData] = useState({
     settings: [],
@@ -197,9 +205,17 @@ const Dashboard = () => {
     if (!sessionStorage.getItem("issuedToken")) {
       history.push("/");
     } else {
-      getVehicleDetails();
+      if (!isLiveLocation) {
+        getVehicleDetails();
+      }
     }
   }, []);
+
+  useEffect(() => {
+    if (isLiveLocation) {
+      onListItemClickHandler(vehicleData);
+    }
+  }, [isLiveLocation]);
 
   const getReverseGeocodingData = (lat, lng) => {
     var latlng = new window.google.maps.LatLng(lat, lng);
@@ -226,6 +242,7 @@ const Dashboard = () => {
     if (isItemSelected && vehicle !== null) {
       getCurrentData(vehicle.assetId).then((response) => {
         if (response) {
+          setImei(response?.imei);
           setData({
             ...data,
             lat: response.lat,
@@ -261,6 +278,7 @@ const Dashboard = () => {
     getReverseGeocodingData(vehicle.lat, vehicle.lng);
     getCurrentData(vehicle.assetId).then((response) => {
       if (response) {
+        setImei(response?.imei);
         setData({
           ...data,
           lat: response.lat,
@@ -5208,7 +5226,7 @@ const Dashboard = () => {
 
   return (
     <Fragment>
-      <Header />
+      {showHeaderFooter && <Header />}
       <div className="main-div">
         {/* <Grid container spacing={2} justify="center">
                         <Grid item xs={12} sm={10} md={8} lg={6}>
@@ -5220,326 +5238,376 @@ const Dashboard = () => {
           spacing={2}
           style={{ marginTop: 0, height: "46rem", maxHeight: "46rem" }}
         >
-          <Grid
-            item
-            lg={3}
-            md={6}
-            sm={10}
-            xs={12}
-            style={{
-              maxWidth: "18%",
-              paddingTop: "2.9rem",
-              paddingLeft: "0.5rem",
-              paddingRight: 0,
-              borderRight: "1px solid gray",
-              height: "46rem",
-              backgroundColor: "white",
-            }}
-          >
-            <div className={classes.searchBarDiv}>
-              <ThemeProvider theme={theme}>
-                <InputLabel htmlFor="search-box-input" />
-                <Input
-                  id="search-box-input"
-                  style={{ width: "92%" }}
-                  endAdornment={
-                    <InputAdornment
-                      onClick={filterHandler}
-                      className={classes.inputAdornment}
-                      position="start"
-                    >
-                      <FilterListIcon />
-                    </InputAdornment>
-                  }
-                  placeholder="Vehicle Id Or Status"
-                  onChange={searchHandler}
-                />
-              </ThemeProvider>
-            </div>
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={data.anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
+          {showLeftSideView && (
+            <Grid
+              item
+              lg={3}
+              md={6}
+              sm={10}
+              xs={12}
+              style={{
+                maxWidth: "18%",
+                paddingTop: "2.9rem",
+                paddingLeft: "0.5rem",
+                paddingRight: 0,
+                borderRight: "1px solid gray",
+                height: "46rem",
+                backgroundColor: "white",
               }}
             >
-              <Card className={classes.root} variant="outlined">
-                <CardHeader
-                  action={
-                    <IconButton onClick={handleClose} aria-label="close-filter">
-                      <CloseIcon />
-                    </IconButton>
-                  }
-                  title={<Typography variant="body1">Filter By</Typography>}
-                />
-                <Divider />
-                <CardContent>
-                  <Grid>
-                    <Typography variant="body2">Status</Typography>
-                    <div>
-                      <FormControlLabel
-                        style={{ width: "108.58px" }}
-                        control={
-                          <GreenCheckbox
-                            checked={data.running}
-                            onChange={handleChange}
-                            name="running"
-                          />
-                        }
-                        label="Running"
-                      />
-                      <FormControlLabel
-                        control={
-                          <GreenCheckbox
-                            checked={data.stopped}
-                            onChange={handleChange}
-                            name="stopped"
-                          />
-                        }
-                        label="Stopped"
-                      />
-                    </div>
-                    <div>
-                      <FormControlLabel
-                        style={{ width: "108.58px" }}
-                        control={
-                          <GreenCheckbox
-                            checked={data.faulty}
-                            onChange={handleChange}
-                            name="faulty"
-                          />
-                        }
-                        label="faulty"
-                      />
-                    </div>
-                  </Grid>
+              <div className={classes.searchBarDiv}>
+                <ThemeProvider theme={theme}>
+                  <InputLabel htmlFor="search-box-input" />
+                  <Input
+                    id="search-box-input"
+                    style={{ width: "92%" }}
+                    endAdornment={
+                      <InputAdornment
+                        onClick={filterHandler}
+                        className={classes.inputAdornment}
+                        position="start"
+                      >
+                        <FilterListIcon />
+                      </InputAdornment>
+                    }
+                    placeholder="Vehicle Id Or Status"
+                    onChange={searchHandler}
+                  />
+                </ThemeProvider>
+              </div>
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={data.anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+              >
+                <Card className={classes.root} variant="outlined">
+                  <CardHeader
+                    action={
+                      <IconButton
+                        onClick={handleClose}
+                        aria-label="close-filter"
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    }
+                    title={<Typography variant="body1">Filter By</Typography>}
+                  />
                   <Divider />
-                  <Grid>
-                    <div style={{ paddingTop: "1rem" }}>
-                      <CustomSlider
-                        name="battery"
-                        changeCommited={changeCommited("battery")}
-                        sliderChange={sliderChange("battery")}
-                        minRange={data.batteryMinRange}
-                        maxRange={data.batteryMaxRange}
-                        title="Battery Voltage"
-                        min={data.batteryMinValue}
-                        max={data.batteryMaxValue}
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Input
-                          value={data.batteryMinRange}
-                          margin="dense"
-                          onChange={onChange}
-                          name="batteryMinRange"
-                          inputProps={{
-                            step: 4,
-                            min: 0,
-                            max: 36,
-                            type: "number",
-                            "aria-labelledby": "input-slider",
-                          }}
+                  <CardContent>
+                    <Grid>
+                      <Typography variant="body2">Status</Typography>
+                      <div>
+                        <FormControlLabel
+                          style={{ width: "108.58px" }}
+                          control={
+                            <GreenCheckbox
+                              checked={data.running}
+                              onChange={handleChange}
+                              name="running"
+                            />
+                          }
+                          label="Running"
                         />
-                        <Input
-                          value={data.batteryMaxRange}
-                          margin="dense"
-                          onChange={onChange}
-                          name="batteryMaxRange"
-                          inputProps={{
-                            step: 4,
-                            min: 0,
-                            max: 36,
-                            type: "number",
-                            "aria-labelledby": "input-slider",
-                          }}
+                        <FormControlLabel
+                          control={
+                            <GreenCheckbox
+                              checked={data.stopped}
+                              onChange={handleChange}
+                              name="stopped"
+                            />
+                          }
+                          label="Stopped"
                         />
                       </div>
-                    </div>
-                    <div style={{ paddingTop: "1rem" }}>
-                      <CustomSlider
-                        title="Fuel Status (Ltrs)"
-                        changeCommited={changeCommited("fuel")}
-                        sliderChange={sliderChange("fuel")}
-                        minRange={data.fuelStatusMinRange}
-                        maxRange={data.fuelStatusMaxRange}
-                        min={data.fuelStatusMinValue}
-                        max={data.fuelStatusMaxValue}
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Input
-                          value={data.fuelStatusMinRange}
-                          margin="dense"
-                          onChange={onChange}
-                          name="fuelStatusMinRange"
-                          inputProps={{
-                            step: 50,
-                            min: 0,
-                            max: 650,
-                            type: "number",
-                            "aria-labelledby": "input-slider",
-                          }}
-                        />
-                        <Input
-                          value={data.fuelStatusMaxRange}
-                          margin="dense"
-                          onChange={onChange}
-                          name="fuelStatusMaxRange"
-                          inputProps={{
-                            step: 50,
-                            min: 0,
-                            max: 650,
-                            type: "number",
-                            "aria-labelledby": "input-slider",
-                          }}
+                      <div>
+                        <FormControlLabel
+                          style={{ width: "108.58px" }}
+                          control={
+                            <GreenCheckbox
+                              checked={data.faulty}
+                              onChange={handleChange}
+                              name="faulty"
+                            />
+                          }
+                          label="faulty"
                         />
                       </div>
-                    </div>
-                    <div style={{ paddingTop: "1rem" }}>
-                      <CustomSlider
-                        title="Oddometer (Km)"
-                        changeCommited={changeCommited("oddometer")}
-                        sliderChange={sliderChange("oddometer")}
-                        minRange={data.oddometerMinRange}
-                        maxRange={data.oddometerMaxRange}
-                        min={data.oddometerMinValue}
-                        max={data.oddometerMaxValue}
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Input
-                          value={data.oddometerMinRange}
-                          margin="dense"
-                          onChange={onChange}
-                          name="oddometerMinRange"
-                          inputProps={{
-                            step: 1000,
-                            min: 0,
-                            max: 10000,
-                            type: "number",
-                            "aria-labelledby": "input-slider",
-                          }}
+                    </Grid>
+                    <Divider />
+                    <Grid>
+                      <div style={{ paddingTop: "1rem" }}>
+                        <CustomSlider
+                          name="battery"
+                          changeCommited={changeCommited("battery")}
+                          sliderChange={sliderChange("battery")}
+                          minRange={data.batteryMinRange}
+                          maxRange={data.batteryMaxRange}
+                          title="Battery Voltage"
+                          min={data.batteryMinValue}
+                          max={data.batteryMaxValue}
                         />
-                        <Input
-                          value={data.oddometerMaxRange}
-                          margin="dense"
-                          onChange={onChange}
-                          name="oddometerMaxRange"
-                          inputProps={{
-                            step: 1000,
-                            min: 0,
-                            max: 10000,
-                            type: "number",
-                            "aria-labelledby": "input-slider",
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
                           }}
-                        />
-                      </div>
-                    </div>
-                  </Grid>
-                </CardContent>
-                <Divider />
-                <CardActions style={{ justifyContent: "center" }}>
-                  <Button onClick={resetAllClickHandler} variant="outlined">
-                    Reset All
-                  </Button>
-                </CardActions>
-              </Card>
-            </Popover>
-            <div className={classes.SettingsDiv}>
-              {data.settings.length === 0 ? (
-                <List>
-                  {settings.map((vehicle, index) => (
-                    <div key={index}>
-                      <ListItem
-                        className={data.selectedList ? classes.listItem : ""}
-                        button
-                        onClick={() => handleClick(vehicle)}
-                      >
-                        <ListItemText>
-                          {vehicle.name === "Passenger" ? (
-                            <FontAwesomeIcon
-                              style={{
-                                marginRight: "0.5rem",
-                                color: "green",
-                              }}
-                              icon={faShuttleVan}
-                            />
-                          ) : vehicle.name === "Light Weight" ? (
-                            <FontAwesomeIcon
-                              style={{ marginRight: "0.5rem", color: "blue" }}
-                              icon={faCar}
-                            />
-                          ) : vehicle.name === "LCV" ? (
-                            <FontAwesomeIcon
-                              style={{
-                                marginRight: "0.5rem",
-                                color: "orange",
-                              }}
-                              icon={faTruck}
-                            />
-                          ) : vehicle.name === "HCV" ? (
-                            <FontAwesomeIcon
-                              style={{ marginRight: "0.5rem", color: "red" }}
-                              icon={faBus}
-                            />
-                          ) : (
-                            ""
-                          )}
-                          {vehicle.name}
-                          <StyledBadge
-                            style={{
-                              verticalAlign: "top",
-                              float: "right",
-                              marginRight: "1rem",
+                        >
+                          <Input
+                            value={data.batteryMinRange}
+                            margin="dense"
+                            onChange={onChange}
+                            name="batteryMinRange"
+                            inputProps={{
+                              step: 4,
+                              min: 0,
+                              max: 36,
+                              type: "number",
+                              "aria-labelledby": "input-slider",
                             }}
-                            badgeContent={
-                              vehicle.name === "Passenger"
-                                ? settings[1].SettingsList.length
-                                : vehicle.name === "LCV"
-                                ? settings[2].SettingsList.length
-                                : vehicle.name === "HCV"
-                                ? settings[3].SettingsList.length
-                                : settings[0].SettingsList.length
-                            }
-                            color="primary"
                           />
-                        </ListItemText>
-                        {data.shortName === vehicle.shortName &&
-                        data.expanded ? (
-                          <ExpandLess />
-                        ) : (
-                          <ExpandMore />
-                        )}
-                      </ListItem>
-                      <Collapse
-                        style={{ maxHeight: "24.5rem", overflow: "scroll" }}
-                        in={
-                          data.shortName === vehicle.shortName && data.expanded
-                        }
-                        timeout="auto"
-                        unmountOnExit={true}
-                      >
-                        {data.SettingsList.map((vehicle) => (
+                          <Input
+                            value={data.batteryMaxRange}
+                            margin="dense"
+                            onChange={onChange}
+                            name="batteryMaxRange"
+                            inputProps={{
+                              step: 4,
+                              min: 0,
+                              max: 36,
+                              type: "number",
+                              "aria-labelledby": "input-slider",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div style={{ paddingTop: "1rem" }}>
+                        <CustomSlider
+                          title="Fuel Status (Ltrs)"
+                          changeCommited={changeCommited("fuel")}
+                          sliderChange={sliderChange("fuel")}
+                          minRange={data.fuelStatusMinRange}
+                          maxRange={data.fuelStatusMaxRange}
+                          min={data.fuelStatusMinValue}
+                          max={data.fuelStatusMaxValue}
+                        />
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Input
+                            value={data.fuelStatusMinRange}
+                            margin="dense"
+                            onChange={onChange}
+                            name="fuelStatusMinRange"
+                            inputProps={{
+                              step: 50,
+                              min: 0,
+                              max: 650,
+                              type: "number",
+                              "aria-labelledby": "input-slider",
+                            }}
+                          />
+                          <Input
+                            value={data.fuelStatusMaxRange}
+                            margin="dense"
+                            onChange={onChange}
+                            name="fuelStatusMaxRange"
+                            inputProps={{
+                              step: 50,
+                              min: 0,
+                              max: 650,
+                              type: "number",
+                              "aria-labelledby": "input-slider",
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div style={{ paddingTop: "1rem" }}>
+                        <CustomSlider
+                          title="Oddometer (Km)"
+                          changeCommited={changeCommited("oddometer")}
+                          sliderChange={sliderChange("oddometer")}
+                          minRange={data.oddometerMinRange}
+                          maxRange={data.oddometerMaxRange}
+                          min={data.oddometerMinValue}
+                          max={data.oddometerMaxValue}
+                        />
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Input
+                            value={data.oddometerMinRange}
+                            margin="dense"
+                            onChange={onChange}
+                            name="oddometerMinRange"
+                            inputProps={{
+                              step: 1000,
+                              min: 0,
+                              max: 10000,
+                              type: "number",
+                              "aria-labelledby": "input-slider",
+                            }}
+                          />
+                          <Input
+                            value={data.oddometerMaxRange}
+                            margin="dense"
+                            onChange={onChange}
+                            name="oddometerMaxRange"
+                            inputProps={{
+                              step: 1000,
+                              min: 0,
+                              max: 10000,
+                              type: "number",
+                              "aria-labelledby": "input-slider",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </Grid>
+                  </CardContent>
+                  <Divider />
+                  <CardActions style={{ justifyContent: "center" }}>
+                    <Button onClick={resetAllClickHandler} variant="outlined">
+                      Reset All
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Popover>
+              <div className={classes.SettingsDiv}>
+                {data.settings.length === 0 ? (
+                  <List>
+                    {settings.map((vehicle, index) => (
+                      <div key={index}>
+                        <ListItem
+                          className={data.selectedList ? classes.listItem : ""}
+                          button
+                          onClick={() => handleClick(vehicle)}
+                        >
+                          <ListItemText
+                            disableTypography
+                            style={{ fontSize: 18 }}
+                          >
+                            {vehicle.name === "SCV" ? (
+                              <FontAwesomeIcon
+                                style={{
+                                  marginRight: "0.5rem",
+                                  color: "green",
+                                }}
+                                icon={faShuttleVan}
+                              />
+                            ) : vehicle.name === "Light Weight" ? (
+                              <FontAwesomeIcon
+                                style={{ marginRight: "0.5rem", color: "blue" }}
+                                icon={faCar}
+                              />
+                            ) : vehicle.name === "ILCV" ? (
+                              <FontAwesomeIcon
+                                style={{
+                                  marginRight: "0.5rem",
+                                  color: "orange",
+                                }}
+                                icon={faTruck}
+                              />
+                            ) : vehicle.name === "MHCV" ? (
+                              <FontAwesomeIcon
+                                style={{ marginRight: "0.5rem", color: "red" }}
+                                icon={faBus}
+                              />
+                            ) : (
+                              ""
+                            )}
+                            {vehicle.name}
+                            <StyledBadge
+                              style={{
+                                verticalAlign: "top",
+                                float: "right",
+                                marginRight: "1rem",
+                              }}
+                              badgeContent={
+                                vehicle.name === "SCV"
+                                  ? settings[1].SettingsList.length
+                                  : vehicle.name === "ILCV"
+                                  ? settings[2].SettingsList.length
+                                  : vehicle.name === "MHCV"
+                                  ? 2 // settings[3].SettingsList.length commented code is the actual
+                                  : settings[0].SettingsList.length
+                              }
+                              color="primary"
+                            />
+                          </ListItemText>
+                          {data.shortName === vehicle.shortName &&
+                          data.expanded ? (
+                            <ExpandLess />
+                          ) : (
+                            <ExpandMore />
+                          )}
+                        </ListItem>
+                        <Collapse
+                          style={{ maxHeight: "24.5rem", overflow: "scroll" }}
+                          in={
+                            data.shortName === vehicle.shortName &&
+                            data.expanded
+                          }
+                          timeout="auto"
+                          unmountOnExit={true}
+                        >
+                          {data.SettingsList.map((vehicle) => (
+                            <ListItem
+                              key={vehicle.assetId}
+                              button
+                              onClick={() => onListItemClickHandler(vehicle)}
+                              style={{ justifyContent: "space-between" }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  style={{
+                                    color: vehicle.status
+                                      ? vehicle.status.toLowerCase() ===
+                                        "running"
+                                        ? "green"
+                                        : vehicle.status.toLowerCase() ===
+                                          "stopped"
+                                        ? "red"
+                                        : "gray"
+                                      : "green",
+                                  }}
+                                  icon={faMinusCircle}
+                                />
+                                <p
+                                  style={{
+                                    marginTop: 0,
+                                    marginBottom: 0,
+                                    marginLeft: "1rem",
+                                    fontSize: 16,
+                                  }}
+                                >
+                                  {vehicle.make} {vehicle.model}
+                                </p>
+                              </div>
+                              <p style={{ marginTop: 0, marginBottom: 0 }}>
+                                {vehicle.regNum}
+                              </p>
+                            </ListItem>
+                          ))}
                           <ListItem
                             key={vehicle.assetId}
                             button
@@ -5570,88 +5638,91 @@ const Dashboard = () => {
                                   marginTop: 0,
                                   marginBottom: 0,
                                   marginLeft: "1rem",
+                                  fontSize: 16,
                                 }}
                               >
-                                {vehicle.make} {vehicle.model}
+                                Maruti Suzuki Swift
                               </p>
                             </div>
-                            <p style={{ marginTop: 0, marginBottom: 0 }}>
-                              {vehicle.regNum}
-                            </p>
+                            <p style={{ marginTop: 0, marginBottom: 0 }}>X23</p>
                           </ListItem>
-                        ))}
-                      </Collapse>
-                    </div>
-                  ))}
-                </List>
-              ) : (
-                <List style={{ maxHeight: "40rem", overflow: "scroll" }}>
-                  {data.settings.map((vehicle) => (
-                    <ListItem
-                      key={vehicle.vid}
-                      button
-                      onClick={() => onListItemClickHandler(vehicle)}
-                      style={{ justifyContent: "space-between" }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon
-                          style={{
-                            color:
-                              vehicle.status.toLowerCase() === "running"
-                                ? "green"
-                                : vehicle.status.toLowerCase() === "stopped"
-                                ? "red"
-                                : "gray",
-                          }}
-                          icon={faMinusCircle}
-                        />
-                        <p
-                          style={{
-                            marginTop: 0,
-                            marginBottom: 0,
-                            marginLeft: "1rem",
-                          }}
-                        >
-                          {vehicle.vid}
-                        </p>
+                        </Collapse>
                       </div>
-                      <p style={{ marginTop: 0, marginBottom: 0 }}>
-                        {vehicle.speed} Km/H
-                      </p>
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-            </div>
-          </Grid>
-          <Grid
-            style={{ padding: 0, minWidth: "81.30%" }}
-            item
-            lg={9}
-            md={6}
-            sm={10}
-            xs={12}
-          >
-            <CustomTabs
-              display={data.display}
-              vehicleDetails={data.vehicleDetails}
-              onClose={onClose}
-              closeInfoWindow={closeInfoWindow}
-              selectedList={data.selectedList}
-              openInfoWindow={openInfoWindow}
-              isOpenInfoWindow={data.isOpenInfoWindow}
-              isMarkerShown={data.isMarkerShown}
-              lat={data.lat}
-              lng={data.lng}
-              status={data.status}
-              location={data.location}
-              shortName={data.shortName}
-              assetId={data.assetId}
-            />
-          </Grid>
+                    ))}
+                  </List>
+                ) : (
+                  <List style={{ maxHeight: "40rem", overflow: "scroll" }}>
+                    {data.settings.map((vehicle) => (
+                      <ListItem
+                        key={vehicle.vid}
+                        button
+                        onClick={() => onListItemClickHandler(vehicle)}
+                        style={{ justifyContent: "space-between" }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FontAwesomeIcon
+                            style={{
+                              color:
+                                vehicle.status.toLowerCase() === "running"
+                                  ? "green"
+                                  : vehicle.status.toLowerCase() === "stopped"
+                                  ? "red"
+                                  : "gray",
+                            }}
+                            icon={faMinusCircle}
+                          />
+                          <p
+                            style={{
+                              marginTop: 0,
+                              marginBottom: 0,
+                              marginLeft: "1rem",
+                            }}
+                          >
+                            {vehicle.vid}
+                          </p>
+                        </div>
+                        <p style={{ marginTop: 0, marginBottom: 0 }}>
+                          {vehicle.speed} Km/H
+                        </p>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </div>
+            </Grid>
+          )}
+          {showTabs && (
+            <Grid
+              style={{ padding: 0, minWidth: "81.30%" }}
+              item
+              lg={isLiveLocation ? 12 : 9}
+              md={isLiveLocation ? 12 : 6}
+              sm={10}
+              xs={12}
+            >
+              <CustomTabs
+                display={data.display}
+                vehicleDetails={data.vehicleDetails}
+                onClose={onClose}
+                closeInfoWindow={closeInfoWindow}
+                selectedList={data.selectedList}
+                openInfoWindow={openInfoWindow}
+                isOpenInfoWindow={data.isOpenInfoWindow}
+                isMarkerShown={data.isMarkerShown}
+                lat={data.lat}
+                lng={data.lng}
+                status={data.status}
+                location={data.location}
+                shortName={data.shortName}
+                assetId={data.assetId}
+                imei={imei}
+                isLiveLocation={isLiveLocation}
+              />
+            </Grid>
+          )}
         </Grid>
       </div>
-      <Footer />
+      {showHeaderFooter && <Footer />}
     </Fragment>
   );
 };

@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import ErrorIcon from "@material-ui/icons/Error";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import { getLiveDataAsset } from "../../api/assets.api";
+import { getLiveDataAsset, getDtcData } from "../../api/assets.api";
 
 const useStyles = makeStyles((theme) => ({
   donutRow: {
@@ -49,326 +49,343 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LiveOverView(props) {
+function LiveOverView({ assetId, showSummary = true, isFaultCodes = false }) {
   const classes = useStyles();
 
   const [assetDetails, setAssetDetails] = useState(null);
+  const [dtcData, setDtcData] = useState(null);
 
   useEffect(() => {
-    getAssetLiveDetails();
+    if (!isFaultCodes) {
+      getAssetLiveDetails();
+      getDtcDataDetails();
+    } else {
+      getDtcDataDetails();
+    }
   }, []);
 
   const getAssetLiveDetails = () => {
-    const getAssetLiveDetailsResponse = getLiveDataAsset(props?.assetId);
+    const getAssetLiveDetailsResponse = getLiveDataAsset(assetId);
     getAssetLiveDetailsResponse.then((res) => {
       setAssetDetails(res);
     });
   };
 
+  const getDtcDataDetails = () => {
+    const getDtcDataResponse = getDtcData(assetId);
+    getDtcDataResponse.then((res) => {
+      setDtcData(res);
+    });
+  };
+
   return (
     <Fragment>
-      <Grid container>
-        <Grid item xs={12}>
-          <div className={classes.summary}>Summary</div>
-          <Grid style={{ margin: "1rem" }} container>
-            <Grid item lg={4}>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Registration Number</div>
-                <div className={classes.value}>{assetDetails?.regNo ?? ""}</div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Vehicle Information</div>
-                <div className={classes.value}>
-                  {assetDetails?.assetName ?? ""}
+      {showSummary && (
+        <Grid container>
+          <Grid item xs={12}>
+            <div className={classes.summary}>Summary</div>
+            <Grid style={{ margin: "1rem" }} container>
+              <Grid item lg={4}>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Registration Number</div>
+                  <div className={classes.value}>
+                    {assetDetails?.regNo ?? ""}
+                  </div>
                 </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Report Time</div>
-                <div className={classes.value}>
-                  {new Date(assetDetails?.dateTime * 1000).toUTCString()}
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Vehicle Information</div>
+                  <div className={classes.value}>
+                    {assetDetails?.assetName ?? ""}
+                  </div>
                 </div>
-              </div>
-            </Grid>
-            <Grid item lg={4}>
-              <div className={classes.labelAndValue}>
-                {/* <div className={classes.label}>Garage Name</div> */}
-                <div className={classes.value}></div>
-              </div>
-            </Grid>
-            <Grid item lg={4}></Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <div className={classes.summary}>Engine Check</div>
-          <Grid style={{ margin: "1rem" }} container>
-            <Grid item lg={4}>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Fuel Trim</div>
-                <div className={classes.value}>
-                  {assetDetails?.fuelTrim ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Report Time</div>
+                  <div className={classes.value}>
+                    {new Date(assetDetails?.dateTime * 1000).toUTCString()}
+                  </div>
                 </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Computer Circuit</div>
-                <div className={classes.value}>
-                  {assetDetails?.computerCircuit ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
+              </Grid>
+              <Grid item lg={4}>
+                <div className={classes.labelAndValue}>
+                  {/* <div className={classes.label}>Garage Name</div> */}
+                  <div className={classes.value}></div>
                 </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Battery Voltage</div>
-                <div className={classes.value}>
-                  {assetDetails?.batteryVoltage !== "" ||
-                  assetDetails?.batteryVoltage !== null ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>{assetDetails?.batteryVoltage}</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Coolant Temp</div>
-                <div className={classes.value}>
-                  {assetDetails?.coolantTemp ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </Grid>
-            <Grid item lg={4}>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Emission Control</div>
-                <div className={classes.value}>
-                  {assetDetails?.emissionControl ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Engine Load</div>
-                <div className={classes.value}>
-                  {assetDetails?.engineLoad ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Fuel And Air Mix</div>
-                <div className={classes.value}>
-                  {assetDetails?.fuelAndAirMix ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Fuel Pressure</div>
-                <div className={classes.value}>
-                  {assetDetails?.fuelPressure ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </Grid>
-            <Grid item lg={4}>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Ignition Module</div>
-                <div className={classes.value}>
-                  {assetDetails?.ignitionModule ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Injector Module</div>
-                <div className={classes.value}>
-                  {assetDetails?.injectorModule ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Intake AirTemp</div>
-                <div className={classes.value}>
-                  {assetDetails?.intakeAirTemp ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>MAF</div>
-                <div className={classes.value}>
-                  {assetDetails?.maf ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </Grid>
-            <Grid item lg={4}>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>RPM</div>
-                <div className={classes.value}>
-                  {assetDetails?.rpm ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Throttle Position</div>
-                <div className={classes.value}>
-                  {assetDetails?.throttlePosition ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Transmission</div>
-                <div className={classes.value}>
-                  {assetDetails?.transmission ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className={classes.labelAndValue}>
-                <div className={classes.label}>Vehicle Speed Idle</div>
-                <div className={classes.value}>
-                  {assetDetails?.vehicleSpeedIdle ? (
-                    <>
-                      <CheckCircleIcon className={classes.checkIcon} />
-                      <span>Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <ErrorIcon className={classes.errorIcon} />
-                      <span>Fail</span>
-                    </>
-                  )}
-                </div>
-              </div>
+              </Grid>
+              <Grid item lg={4}></Grid>
             </Grid>
           </Grid>
+          <Grid item xs={12}>
+            <div className={classes.summary}>Engine Check</div>
+            <Grid style={{ margin: "1rem" }} container>
+              <Grid item lg={4}>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Fuel Trim</div>
+                  <div className={classes.value}>
+                    {assetDetails?.fuelTrim ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Computer Circuit</div>
+                  <div className={classes.value}>
+                    {assetDetails?.computerCircuit ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Battery Voltage</div>
+                  <div className={classes.value}>
+                    {assetDetails?.batteryVoltage !== "" ||
+                    assetDetails?.batteryVoltage !== null ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>{assetDetails?.batteryVoltage}</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Coolant Temp</div>
+                  <div className={classes.value}>
+                    {assetDetails?.coolantTemp ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+              <Grid item lg={4}>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Emission Control</div>
+                  <div className={classes.value}>
+                    {assetDetails?.emissionControl ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Engine Load</div>
+                  <div className={classes.value}>
+                    {assetDetails?.engineLoad ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Fuel And Air Mix</div>
+                  <div className={classes.value}>
+                    {assetDetails?.fuelAndAirMix ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Fuel Pressure</div>
+                  <div className={classes.value}>
+                    {assetDetails?.fuelPressure ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+              <Grid item lg={4}>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Ignition Module</div>
+                  <div className={classes.value}>
+                    {assetDetails?.ignitionModule ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Injector Module</div>
+                  <div className={classes.value}>
+                    {assetDetails?.injectorModule ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Intake AirTemp</div>
+                  <div className={classes.value}>
+                    {assetDetails?.intakeAirTemp ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>MAF</div>
+                  <div className={classes.value}>
+                    {assetDetails?.maf ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+              <Grid item lg={4}>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>RPM</div>
+                  <div className={classes.value}>
+                    {assetDetails?.rpm ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Throttle Position</div>
+                  <div className={classes.value}>
+                    {assetDetails?.throttlePosition ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Transmission</div>
+                  <div className={classes.value}>
+                    {assetDetails?.transmission ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.labelAndValue}>
+                  <div className={classes.label}>Vehicle Speed Idle</div>
+                  <div className={classes.value}>
+                    {assetDetails?.vehicleSpeedIdle ? (
+                      <>
+                        <CheckCircleIcon className={classes.checkIcon} />
+                        <span>Pass</span>
+                      </>
+                    ) : (
+                      <>
+                        <ErrorIcon className={classes.errorIcon} />
+                        <span>Fail</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       {/* <div>
         <div className={classes.donutRow}>
           <DonutChart
@@ -430,7 +447,7 @@ function LiveOverView(props) {
         </div>
       </div> */}
       <div style={{ paddingLeft: "1rem" }}>
-        {assetDetails !== null && <LiveOverViewDataTable data={assetDetails} />}
+        {dtcData !== null && <LiveOverViewDataTable data={dtcData} />}
       </div>
     </Fragment>
   );
